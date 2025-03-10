@@ -1,0 +1,29 @@
+import { ApiResponseAddMetadataInterceptor } from './interceptors/api-response-add-metadata.interceptor';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { EnvironmentService } from 'src/environment/environment.service';
+import { ValidationPipe } from '@nestjs/common';
+import { ApiRequestBodyToCamelCaseTransformPipe } from 'src/pipes/api-request-to-camel-case.pipe';
+import { ApiResponseToSnakeCaseInterceptor } from 'src/interceptors/api-response-to-snake-case.interceptor';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ApiRequestBodyToCamelCaseTransformPipe());
+  app.useGlobalPipes(new ValidationPipe());
+
+  app.useGlobalInterceptors(new ApiResponseToSnakeCaseInterceptor());
+  app.useGlobalInterceptors(new ApiResponseAddMetadataInterceptor());
+
+  const environmentService = app.get(EnvironmentService);
+
+  app.setGlobalPrefix('api/v1');
+
+  const port: number = environmentService.port;
+  await app.listen(port, () => {
+    console.log(`Server is running at port: ${port}`);
+    console.log(`Database host: ${environmentService.postgresHost}`);
+    console.log(`Database port: ${environmentService.postgresPort}`);
+    console.log(`Database name: ${environmentService.postgresDb}`);
+  });
+}
+bootstrap();

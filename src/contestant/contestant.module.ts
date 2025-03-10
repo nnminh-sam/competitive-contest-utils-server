@@ -1,0 +1,13 @@
+import { Module } from '@nestjs/common';
+import { ContestantService } from './contestant.service';
+import { ContestantController } from './contestant.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Contestant } from 'src/contestant/entities/contestant.entity';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Contestant])],
+  providers: [ContestantService],
+  controllers: [ContestantController],
+  exports: [ContestantService],
+})
+export class ContestantModule {}
