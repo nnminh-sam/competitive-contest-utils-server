@@ -7,7 +7,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { Contestant } from 'src/models/contestant.entity';
+import { Contestant } from 'src/models/contestant.model';
 import { ApiResponseWrapper } from 'src/common/decorators/api-response-wrapper.decorator';
 import { AuthService } from 'src/modules/auth/auth.service';
 import { AuthResponseDto } from 'src/modules/auth/dto/auth-response.dto';

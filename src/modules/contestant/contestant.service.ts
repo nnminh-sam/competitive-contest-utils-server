@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Contestant } from 'src/models/contestant.entity';
+import { Contestant } from 'src/models/contestant.model';
 import { Repository } from 'typeorm';
 import { UpdateContestantDto } from 'src/modules/contestant/dto/update-contestant.dto';
 import { camelCaseToNormal } from 'src/helpers';

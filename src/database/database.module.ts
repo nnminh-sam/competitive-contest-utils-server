@@ -25,7 +25,7 @@ import { EnvironmentService } from 'src/environment/environment.service';
         password: postgresPassword,
         database: postgresDb,
         autoLoadEntities: true,
-        entities: [__dirname + '/../**/*.entity.{ts,js}'],
+        entities: [__dirname + '/../models/*.model.{ts,js}'],
         synchronize: true,
       }),
     }),

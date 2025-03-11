@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 
 import { ContestantService } from 'src/modules/contestant/contestant.service';
-import { Contestant } from 'src/models/contestant.entity';
+import { Contestant } from 'src/models/contestant.model';
 import { RedisService } from 'src/database/redis.service';
 import { SignUpDto } from 'src/modules/auth/dto/sign-up.dto';
 import { AuthResponseDto } from 'src/modules/auth/dto/auth-response.dto';

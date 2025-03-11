@@ -1,4 +1,4 @@
-import { Contestant } from 'src/models/contestant.entity';
+import { Contestant } from 'src/models/contestant.model';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ContestantService } from 'src/modules/contestant/contestant.service';

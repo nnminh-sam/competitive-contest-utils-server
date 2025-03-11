@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Gender } from 'src/models/enums/gender.enum';
+import { Team } from 'src/models/team.model';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -44,6 +46,12 @@ export class Contestant {
   @ApiProperty({ description: 'Contestant gender', name: 'gender' })
   @Column({ enum: Gender, default: Gender.OTHER })
   gender: Gender;
+
+  @ManyToOne(() => Team, (team) => team.members, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  team: Team;
 
   @ApiProperty({ description: 'Contestant availability', name: 'availability' })
   @Column({ default: true, select: false })
