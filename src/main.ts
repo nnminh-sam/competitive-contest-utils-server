@@ -5,6 +5,7 @@ import { EnvironmentService } from 'src/environment/environment.service';
 import { ValidationPipe } from '@nestjs/common';
 import { ApiRequestBodyToCamelCaseTransformPipe } from 'src/pipes/api-request-to-camel-case.pipe';
 import { ApiResponseToSnakeCaseInterceptor } from 'src/interceptors/api-response-to-snake-case.interceptor';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +18,17 @@ async function bootstrap() {
   const environmentService = app.get(EnvironmentService);
 
   app.setGlobalPrefix('api/v1');
+
+  const config = new DocumentBuilder()
+    .setTitle('Competitive programming contest utils')
+    .setDescription(
+      'The competitive programming contest utils server API description',
+    )
+    .setVersion('1.0')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory);
+  console.log('Swagger is running at localhost/api');
 
   const port: number = environmentService.port;
   await app.listen(port, () => {

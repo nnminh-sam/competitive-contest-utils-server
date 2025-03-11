@@ -15,6 +15,7 @@ import { SignInDto } from 'src/auth/dto/sign-in.dto';
 import { AuthResponseDto } from 'src/auth/dto/auth-response.dto';
 import { ChangePasswordDto } from 'src/auth/dto/change-password.dto';
 import { RedisService } from 'src/database/redis.service';
+import { ChangePasswordResponseDto } from 'src/auth/dto/change-password-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -97,7 +98,7 @@ export class AuthService {
     return {
       token,
       expiresIn: '5m',
-    };
+    } as ChangePasswordResponseDto;
   }
 
   async resetPassword(token: string, newPassword: string) {
