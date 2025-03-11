@@ -20,11 +20,11 @@ const convertToSnakeCase = (obj: Record<string, any>): any => {
   objKeys.forEach((key: string, index: number) => {
     snakeCaseKeys.push(toSnakeCase(key));
 
-    if (
-      isDate(objValues.at(index)) ||
-      isArray(objValues.at(index)) ||
-      !isObject(objValues.at(index))
-    ) {
+    if (isArray(objValues.at(index))) {
+      snakeCaseValues.push(
+        objValues[index].map((data: any) => convertToSnakeCase(data)),
+      );
+    } else if (isDate(objValues.at(index)) || !isObject(objValues.at(index))) {
       snakeCaseValues.push(objValues.at(index));
     } else if (isObject(objValues.at(index))) {
       snakeCaseValues.push(convertToSnakeCase(objValues.at(index)));

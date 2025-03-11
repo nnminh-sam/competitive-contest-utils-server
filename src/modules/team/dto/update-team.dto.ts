@@ -21,7 +21,7 @@ export class UpdateTeamDto {
     type: [String],
   })
   @IsArray()
-  @ArrayNotEmpty()
+  @IsOptional()
   @IsString({ each: true })
-  members: string[];
+  members?: string[];
 }

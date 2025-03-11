@@ -39,7 +39,7 @@ export class TeamService {
       const team = await this.teamRepository.save(teamEntity);
       return team;
     } catch (error: any) {
-      this.logger.log(error.message);
+      this.logger.error(error.message);
       throw new BadRequestException('Cannot create team');
     }
   }
@@ -51,28 +51,40 @@ export class TeamService {
     });
   }
 
-  async update(updateTeamDto: UpdateTeamDto) {
-    const team = await this.teamRepository.findOneBy({
-      name: updateTeamDto.name,
-    });
-    if (team) throw new BadRequestException('Name has been taken');
+  async update(id: string, updateTeamDto: UpdateTeamDto) {
+    const isTeamNameTaken =
+      updateTeamDto?.name &&
+      (await this.teamRepository.existsBy({
+        name: updateTeamDto?.name,
+      }));
+    if (isTeamNameTaken) throw new BadRequestException('Name has been taken');
 
-    const contestants: Contestant[] = await Promise.all(
-      updateTeamDto.members.map((email: string) => {
-        return this.contestantService.findOneBy({ email });
-      }),
-    );
-    if (contestants.includes(null))
+    const team: Team = await this.teamRepository.findOne({
+      where: { id },
+      relations: ['members'],
+    });
+    if (!team) throw new BadRequestException('Invalid id');
+
+    const contestants: Contestant[] = updateTeamDto?.members
+      ? await Promise.all(
+          updateTeamDto.members.map((email: string) =>
+            this.contestantService.findOneBy({ email }),
+          ),
+        )
+      : [];
+    if (contestants.length !== 0 && contestants.includes(null))
       throw new BadRequestException('Contestant not found');
 
     try {
       const mergedEntity = this.teamRepository.merge(team, {
         ...updateTeamDto,
-        members: contestants,
+        ...(contestants.length !== 0 && {
+          members: contestants,
+        }),
       });
       return await this.teamRepository.save(mergedEntity);
     } catch (error: any) {
-      this.logger.log(error.message);
+      this.logger.error(error.message);
       throw new BadRequestException('Cannot update team');
     }
   }

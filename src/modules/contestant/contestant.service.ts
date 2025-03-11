@@ -83,16 +83,16 @@ export class ContestantService {
 
   async update(id: string, updateContestantDto: UpdateContestantDto) {
     try {
-      const contestant = await this.contestantRepository.findOne({
-        where: { id, availability: true },
-      });
-      if (!contestant) throw new NotFoundException('Contestant not found');
-
-      const mergedEntity = this.contestantRepository.merge(
-        contestant,
-        updateContestantDto,
+      const res = await this.contestantRepository.update(
+        { id, availability: true },
+        { ...updateContestantDto },
       );
-      return await this.contestantRepository.save(mergedEntity);
+      if (!res?.affected) throw new NotFoundException('Contestant not found');
+
+      return await this.contestantRepository.findOneBy({
+        id,
+        availability: true,
+      });
     } catch (error: any) {
       this.logger.error(error.message);
       throw new BadRequestException('Cannot update contestant');

@@ -57,11 +57,12 @@ export class TeamController {
   @ApiBadRequestResponse({
     description: 'Team name has been taken or team member not exist',
   })
-  @Patch()
+  @Patch('/:id')
   async update(
+    @Param('id') id: string,
     @Body()
     updateTeamDto: UpdateTeamDto,
   ) {
-    return await this.teamService.update(updateTeamDto);
+    return await this.teamService.update(id, updateTeamDto);
   }
 }

@@ -23,17 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtClaimDto) {
-    const contestant: Contestant = await this.contestantService.findOne(
-      payload.sub,
-    );
-    const { accessToken, refreshToken } = this.authService.generateTokens({
-      email: contestant.email,
-      sub: contestant.id,
-    });
-    return {
-      contestant,
-      jwt: accessToken,
-      refreshToken,
-    } as AuthResponseDto;
+    return await this.contestantService.findOne(payload.sub);
   }
 }
