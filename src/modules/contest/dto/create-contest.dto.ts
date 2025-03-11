@@ -17,6 +17,7 @@ export class CreateContestDto {
     description: "Contest's formal name",
     type: 'string',
     required: false,
+    name: 'formal_name',
   })
   @IsString()
   @IsOptional()
@@ -44,6 +45,7 @@ export class CreateContestDto {
     description: "Contest's start timestamp",
     type: 'string',
     format: 'date-time',
+    name: 'start_at',
   })
   @IsDateString()
   @IsNotEmpty()
