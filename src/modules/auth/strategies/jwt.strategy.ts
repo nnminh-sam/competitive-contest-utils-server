@@ -1,12 +1,12 @@
-import { Contestant } from 'src/contestant/entities/contestant.entity';
+import { Contestant } from 'src/models/contestant.entity';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { AuthService } from 'src/auth/auth.service';
-import { JwtClaimDto } from 'src/auth/dto/jwt-claim.dto';
-import { ContestantService } from 'src/contestant/contestant.service';
+import { ContestantService } from 'src/modules/contestant/contestant.service';
 import { EnvironmentService } from 'src/environment/environment.service';
-import { AuthResponseDto } from 'src/auth/dto/auth-response.dto';
 import { Injectable } from '@nestjs/common';
+import { AuthService } from 'src/modules/auth/auth.service';
+import { JwtClaimDto } from 'src/modules/auth/dto/jwt-claim.dto';
+import { AuthResponseDto } from 'src/modules/auth/dto/auth-response.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

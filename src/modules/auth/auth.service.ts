@@ -4,18 +4,18 @@ import {
   BadGatewayException,
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { SignUpDto } from 'src/auth/dto/sign-up.dto';
-import { ContestantService } from 'src/contestant/contestant.service';
-import { Contestant } from 'src/contestant/entities/contestant.entity';
-import { SignInDto } from 'src/auth/dto/sign-in.dto';
-import { AuthResponseDto } from 'src/auth/dto/auth-response.dto';
-import { ChangePasswordDto } from 'src/auth/dto/change-password.dto';
+
+import { ContestantService } from 'src/modules/contestant/contestant.service';
+import { Contestant } from 'src/models/contestant.entity';
 import { RedisService } from 'src/database/redis.service';
-import { ChangePasswordResponseDto } from 'src/auth/dto/change-password-response.dto';
+import { SignUpDto } from 'src/modules/auth/dto/sign-up.dto';
+import { AuthResponseDto } from 'src/modules/auth/dto/auth-response.dto';
+import { SignInDto } from 'src/modules/auth/dto/sign-in.dto';
+import { ChangePasswordDto } from 'src/modules/auth/dto/change-password.dto';
+import { ChangePasswordResponseDto } from 'src/modules/auth/dto/change-password-response.dto';
 
 @Injectable()
 export class AuthService {

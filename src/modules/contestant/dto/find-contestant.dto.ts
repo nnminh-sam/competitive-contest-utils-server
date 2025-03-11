@@ -1,5 +1,5 @@
 import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
-import { Gender } from 'src/contestant/entities/gender.enum';
+import { Gender } from 'src/models/enums/gender.enum';
 
 export class FindContestantDto {
   @IsString()

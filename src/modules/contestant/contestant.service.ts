@@ -5,13 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Contestant } from 'src/contestant/entities/contestant.entity';
+import { Contestant } from 'src/models/contestant.entity';
 import { Repository } from 'typeorm';
-import { UpdateContestantDto } from 'src/contestant/dto/update-contestant.dto';
-import { SignUpDto } from 'src/auth/dto/sign-up.dto';
-import { camelCaseToNormal } from 'src/utils';
+import { UpdateContestantDto } from 'src/modules/contestant/dto/update-contestant.dto';
+import { camelCaseToNormal } from 'src/helpers';
 import * as bcrypt from 'bcrypt';
-import { FindContestantDto } from 'src/contestant/dto/find-contestant.dto';
+import { FindContestantDto } from 'src/modules/contestant/dto/find-contestant.dto';
+import { SignUpDto } from 'src/modules/auth/dto/sign-up.dto';
 
 @Injectable()
 export class ContestantService {

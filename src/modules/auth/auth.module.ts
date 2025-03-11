@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { ContestantModule } from 'src/contestant/contestant.module';
+import { ContestantModule } from 'src/modules/contestant/contestant.module';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { EnvironmentModule } from 'src/environment/environment.module';
 import { EnvironmentService } from 'src/environment/environment.service';
-import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
-import { LocalStrategy } from 'src/auth/strategies/local.strategy';
 import { DatabaseModule } from 'src/database/database.module';
+import { JwtStrategy } from 'src/modules/auth/strategies/jwt.strategy';
+import { LocalStrategy } from 'src/modules/auth/strategies/local.strategy';
 
 @Module({
   imports: [

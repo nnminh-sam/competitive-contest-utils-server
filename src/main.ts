@@ -1,10 +1,10 @@
-import { ApiResponseAddMetadataInterceptor } from './interceptors/api-response-add-metadata.interceptor';
+import { ApiResponseAddMetadataInterceptor } from './common/interceptors/api-response-add-metadata.interceptor';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { EnvironmentService } from 'src/environment/environment.service';
 import { ValidationPipe } from '@nestjs/common';
-import { ApiRequestBodyToCamelCaseTransformPipe } from 'src/pipes/api-request-to-camel-case.pipe';
-import { ApiResponseToSnakeCaseInterceptor } from 'src/interceptors/api-response-to-snake-case.interceptor';
+import { ApiRequestBodyToCamelCaseTransformPipe } from 'src/common/pipes/api-request-to-camel-case.pipe';
+import { ApiResponseToSnakeCaseInterceptor } from 'src/common/interceptors/api-response-to-snake-case.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {

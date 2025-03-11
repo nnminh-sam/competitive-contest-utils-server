@@ -6,14 +6,15 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthService } from 'src/auth/auth.service';
-import { AuthResponseDto } from 'src/auth/dto/auth-response.dto';
-import { ChangePasswordResponseDto } from 'src/auth/dto/change-password-response.dto';
-import { ChangePasswordDto } from 'src/auth/dto/change-password.dto';
-import { SignInDto } from 'src/auth/dto/sign-in.dto';
-import { SignUpDto } from 'src/auth/dto/sign-up.dto';
-import { Contestant } from 'src/contestant/entities/contestant.entity';
-import { ApiResponseWrapper } from 'src/decorator/api-response-wrapper.decorator';
+
+import { Contestant } from 'src/models/contestant.entity';
+import { ApiResponseWrapper } from 'src/common/decorators/api-response-wrapper.decorator';
+import { AuthService } from 'src/modules/auth/auth.service';
+import { AuthResponseDto } from 'src/modules/auth/dto/auth-response.dto';
+import { SignInDto } from 'src/modules/auth/dto/sign-in.dto';
+import { SignUpDto } from 'src/modules/auth/dto/sign-up.dto';
+import { ChangePasswordResponseDto } from 'src/modules/auth/dto/change-password-response.dto';
+import { ChangePasswordDto } from 'src/modules/auth/dto/change-password.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')

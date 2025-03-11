@@ -6,13 +6,13 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { JwtGuard } from 'src/auth/guard/jwt.guard';
-import { ContestantService } from 'src/contestant/contestant.service';
-import { UserClaim } from 'src/auth/decorator/user-claim.decorator';
-import { JwtClaimDto } from 'src/auth/dto/jwt-claim.dto';
-import { UpdateContestantDto } from 'src/contestant/dto/update-contestant.dto';
-import { Contestant } from 'src/contestant/entities/contestant.entity';
-import { ApiResponseWrapper } from 'src/decorator/api-response-wrapper.decorator';
+import { JwtGuard } from 'src/common/guards/jwt.guard';
+import { ContestantService } from 'src/modules/contestant/contestant.service';
+import { UserClaim } from 'src/common/decorators/user-claim.decorator';
+import { UpdateContestantDto } from 'src/modules/contestant/dto/update-contestant.dto';
+import { Contestant } from 'src/models/contestant.entity';
+import { ApiResponseWrapper } from 'src/common/decorators/api-response-wrapper.decorator';
+import { JwtClaimDto } from 'src/modules/auth/dto/jwt-claim.dto';
 
 @ApiTags('Contestants')
 @ApiBearerAuth()
