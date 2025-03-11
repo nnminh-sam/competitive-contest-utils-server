@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RedisProvider } from 'src/database/provider/redis.provider';
+import { RedisService } from 'src/database/redis.service';
 import { EnvironmentModule } from 'src/environment/environment.module';
 import { EnvironmentService } from 'src/environment/environment.service';
 
 @Module({
   imports: [
+    EnvironmentModule,
     TypeOrmModule.forRootAsync({
       inject: [EnvironmentService],
       imports: [EnvironmentModule],
@@ -27,5 +30,7 @@ import { EnvironmentService } from 'src/environment/environment.service';
       }),
     }),
   ],
+  providers: [RedisProvider, RedisService],
+  exports: [RedisService],
 })
 export class DatabaseModule {}

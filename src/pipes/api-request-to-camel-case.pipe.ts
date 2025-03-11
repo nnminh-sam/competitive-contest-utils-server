@@ -16,11 +16,6 @@ export class ApiRequestBodyToCamelCaseTransformPipe implements PipeTransform {
       );
     };
 
-    const transformedValue = convertToCamelCase(value);
-    console.log(
-      '🚀 ~ ApiRequestBodyTransformPipe ~ transform:',
-      transformedValue,
-    );
-    return transformedValue;
+    return convertToCamelCase(value);
   }
 }

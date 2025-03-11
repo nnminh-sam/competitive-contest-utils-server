@@ -11,3 +11,15 @@ services:
     volumes:
       - ~/docker-volumes/contest-system-db:/var/lib/postgresql/data
     restart: always
+
+  redis:
+    container_name: contest-system-redis-db
+    image: redis:8.0-M02-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
+    driver: local

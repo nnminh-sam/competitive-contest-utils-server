@@ -36,4 +36,12 @@ export class EnvironmentService {
   get expiredIn(): string {
     return this.configService.get<string>('EXPIRED_IN');
   }
+
+  get redisBlacklistHost(): string {
+    return this.configService.get<string>('REDIS_BLACKLIST_HOST');
+  }
+
+  get redisBlacklistPort(): number {
+    return this.configService.get<number>('REDIS_BLACKLIST_PORT');
+  }
 }

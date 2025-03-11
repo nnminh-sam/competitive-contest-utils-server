@@ -98,4 +98,23 @@ export class ContestantService {
       throw new BadRequestException('Cannot update contestant');
     }
   }
+
+  async updatePassword(id: string, password: string) {
+    try {
+      const contestant: Contestant = await this.contestantRepository.findOne({
+        where: { id, availability: true },
+      });
+      if (!contestant) throw new NotFoundException('Contestant not found');
+
+      const mergedEntity = this.contestantRepository.merge(contestant, {
+        password: await bcrypt.hash(password, 10),
+      });
+      const result = await this.contestantRepository.save(mergedEntity);
+      delete result.password;
+      return result;
+    } catch (error: any) {
+      this.logger.error(error.message);
+      throw new BadRequestException('Cannot update password');
+    }
+  }
 }

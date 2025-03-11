@@ -26,6 +26,12 @@ export class EnvironmentVariablesDto {
 
   @IsString()
   EXPIRED_IN: string;
+
+  @IsString()
+  REDIS_BLACKLIST_HOST: string;
+
+  @IsNumber()
+  REDIS_BLACKLIST_PORT: number;
 }
 
 export function validate(

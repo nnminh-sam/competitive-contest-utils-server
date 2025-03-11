@@ -7,9 +7,11 @@ import { EnvironmentModule } from 'src/environment/environment.module';
 import { EnvironmentService } from 'src/environment/environment.service';
 import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
 import { LocalStrategy } from 'src/auth/strategies/local.strategy';
+import { DatabaseModule } from 'src/database/database.module';
 
 @Module({
   imports: [
+    DatabaseModule,
     EnvironmentModule,
     ContestantModule,
     JwtModule.registerAsync({
