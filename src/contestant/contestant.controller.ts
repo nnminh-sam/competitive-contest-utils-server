@@ -12,7 +12,6 @@ import { UserClaim } from 'src/auth/decorator/user-claim.decorator';
 import { JwtClaimDto } from 'src/auth/dto/jwt-claim.dto';
 import { UpdateContestantDto } from 'src/contestant/dto/update-contestant.dto';
 import { Contestant } from 'src/contestant/entities/contestant.entity';
-import { ApiResponseDto } from 'src/interceptors/dto/generic-api-response.dto';
 import { ApiResponseWrapper } from 'src/decorator/api-response-wrapper.decorator';
 
 @ApiTags('Contestants')

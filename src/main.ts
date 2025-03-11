@@ -24,6 +24,7 @@ async function bootstrap() {
     .setDescription(
       'The competitive programming contest utils server API description',
     )
+    .addBearerAuth()
     .setVersion('1.0')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
