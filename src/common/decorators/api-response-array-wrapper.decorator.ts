@@ -2,7 +2,9 @@ import { applyDecorators, Type } from '@nestjs/common';
 import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
 import { ApiResponseDto } from 'src/common/dtos/generic-api-response.dto';
 
-export const ApiResponseWrapper = <TModel extends Type<any>>(model: TModel) => {
+export const ApiResponseArrayWrapper = <TModel extends Type<any>>(
+  model: TModel,
+) => {
   return applyDecorators(
     ApiExtraModels(ApiResponseDto, model),
     ApiOkResponse({
@@ -11,7 +13,10 @@ export const ApiResponseWrapper = <TModel extends Type<any>>(model: TModel) => {
           { $ref: getSchemaPath(ApiResponseDto) },
           {
             properties: {
-              data: { $ref: getSchemaPath(model) },
+              data: {
+                type: 'array',
+                items: { $ref: getSchemaPath(model) },
+              },
             },
           },
         ],

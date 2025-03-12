@@ -5,6 +5,7 @@ import { EnvironmentModule } from './environment/environment.module';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { TeamModule } from 'src/modules/team/team.module';
 import { ContestModule } from 'src/modules/contest/contest.module';
+import { AffiliationModule } from './modules/affiliation/affiliation.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ContestModule } from 'src/modules/contest/contest.module';
     AuthModule,
     TeamModule,
     ContestModule,
+    AffiliationModule,
   ],
 })
 export class AppModule {}
