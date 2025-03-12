@@ -8,5 +8,6 @@ import { Affiliation } from 'src/models/affiliation.model';
   imports: [TypeOrmModule.forFeature([Affiliation])],
   providers: [AffiliationService],
   controllers: [AffiliationController],
+  exports: [AffiliationService],
 })
 export class AffiliationModule {}

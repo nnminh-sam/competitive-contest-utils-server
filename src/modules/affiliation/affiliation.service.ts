@@ -29,6 +29,12 @@ export class AffiliationService {
     });
   }
 
+  async findOneBy(findAffiliationDto: FindAffiliationDto) {
+    return await this.affiliationRepository.findOne({
+      where: { name: ILike(findAffiliationDto.name) },
+    });
+  }
+
   async create(createAffiliationDto: CreateAffiliationDto) {
     const existAffiliation = await this.affiliationRepository.existsBy({
       name: createAffiliationDto.name,

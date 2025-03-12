@@ -6,9 +6,8 @@ export class FindAffiliationDto extends PaginationAndOrderingDto {
   @ApiProperty({
     description: 'Affiliation name',
     type: 'string',
-    required: true,
   })
   @IsString()
   @IsOptional()
-  name: string;
+  name?: string;
 }
