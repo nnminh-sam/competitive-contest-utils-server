@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { RedisProvider } from 'src/database/provider/redis.provider';
 import { RedisService } from 'src/database/redis.service';
 import { EnvironmentModule } from 'src/environment/environment.module';
@@ -17,7 +17,7 @@ import { EnvironmentService } from 'src/environment/environment.service';
         postgresUser,
         postgresPassword,
         postgresDb,
-      }: EnvironmentService) => ({
+      }: EnvironmentService): TypeOrmModuleOptions => ({
         type: 'postgres',
         host: postgresHost,
         port: postgresPort,
