@@ -16,9 +16,13 @@ export class AffiliationService {
   ) {}
 
   async find({ page, limit, orderBy, sortBy, name }: FindAffiliationDto) {
-    const skip: number = page * limit;
+    const skip: number = (page - 1) * limit;
     return await this.affiliationRepository.find({
-      where: { name: ILike(name) },
+      where: {
+        ...(name && {
+          name: ILike(name),
+        }),
+      },
       skip,
       take: limit,
       order: { [orderBy]: sortBy },
@@ -41,15 +45,19 @@ export class AffiliationService {
     }
   }
 
-  async update(updateAffiliationDto: UpdateAffiliationDto) {
-    const affiliation = await this.affiliationRepository.findOneBy({
+  async update(id: string, updateAffiliationDto: UpdateAffiliationDto) {
+    const existAffiliation = await this.affiliationRepository.existsBy({
       name: updateAffiliationDto.name,
     });
-    if (affiliation)
+    if (existAffiliation)
       throw new BadRequestException('Affiliation name has been taken');
+
+    const entity = await this.affiliationRepository.findOneBy({ id });
+    if (!entity) throw new BadRequestException('Invalid id');
+
     try {
       const mergedEntity = this.affiliationRepository.merge(
-        affiliation,
+        entity,
         updateAffiliationDto,
       );
       return await this.affiliationRepository.save(mergedEntity);

@@ -1,19 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNumber, IsString, Min } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class PaginationAndOrderingDto {
   @ApiProperty({ description: 'Page', type: 'number', default: 1 })
   @IsNumber()
   @Min(1)
+  @IsOptional()
+  @Transform(({ value }) => (value !== null ? Number(value) : 1))
   page: number = 1;
 
   @ApiProperty({
-    description: 'Number of item per page',
+    description: 'Number of items per page',
     type: 'number',
     default: 10,
   })
   @IsNumber()
   @Min(10)
+  @IsOptional()
+  @Transform(({ value }) => (value !== null ? Number(value) : 10))
   limit: number = 10;
 
   @ApiProperty({
@@ -23,6 +28,8 @@ export class PaginationAndOrderingDto {
     name: 'order_by',
   })
   @IsString()
+  @IsOptional()
+  @Transform(({ value }) => (value !== null ? value : 'id'))
   orderBy: string = 'id';
 
   @ApiProperty({
@@ -32,5 +39,7 @@ export class PaginationAndOrderingDto {
     name: 'sort_by',
   })
   @IsString()
-  sortBy: 'asc' | 'desc';
+  @IsOptional()
+  @Transform(({ value }) => (value !== null ? value : 'asc'))
+  sortBy: 'asc' | 'desc' = 'asc';
 }

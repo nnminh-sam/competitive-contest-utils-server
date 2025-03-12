@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Query,
@@ -26,7 +27,7 @@ import { UpdateAffiliationDto } from 'src/modules/affiliation/dto/update-affilia
 @ApiTags('Affiliations')
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
-@Controller('affiliation')
+@Controller('affiliations')
 export class AffiliationController {
   constructor(private readonly affiliationService: AffiliationService) {}
 
@@ -57,11 +58,13 @@ export class AffiliationController {
   @ApiOkResponse({ description: 'Successfully updated new affiliation' })
   @ApiBadRequestResponse({ description: 'Affiliation name has been taken' })
   @ApiResponseWrapper(Affiliation)
-  @Patch()
+  @Patch('/:id')
   async update(
+    @Param('id')
+    id: string,
     @Body()
     updateAffiliationDto: UpdateAffiliationDto,
   ) {
-    return await this.affiliationService.update(updateAffiliationDto);
+    return await this.affiliationService.update(id, updateAffiliationDto);
   }
 }

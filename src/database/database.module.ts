@@ -27,6 +27,7 @@ import { EnvironmentService } from 'src/environment/environment.service';
         autoLoadEntities: true,
         entities: [__dirname + '/../models/*.model.{ts,js}'],
         synchronize: true,
+        logging: true,
       }),
     }),
   ],
