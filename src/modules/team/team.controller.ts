@@ -25,7 +25,10 @@ import { TeamService } from 'src/modules/team/team.service';
 @ApiTags('Teams')
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
-@Controller('teams')
+@Controller({
+  path: 'teams',
+  version: '1',
+})
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 

@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Contest } from 'src/models/contest.model';
 import { Gender } from 'src/models/enums/gender.enum';
 import { Team } from 'src/models/team.model';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -51,7 +53,10 @@ export class Contestant {
     onDelete: 'SET NULL',
     nullable: true,
   })
-  team: Team;
+  team?: Team;
+
+  @ManyToMany(() => Contest, (contest) => contest.participants)
+  contests?: Contest[];
 
   @ApiProperty({ description: 'Contestant availability', name: 'availability' })
   @Column({ default: true, select: false })

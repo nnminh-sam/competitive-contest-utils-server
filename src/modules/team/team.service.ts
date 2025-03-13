@@ -45,6 +45,7 @@ export class TeamService {
   }
 
   async findOne(id: string) {
+    if (!id) return null;
     return await this.teamRepository.findOne({
       where: { id },
       relations: ['members'],

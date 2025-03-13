@@ -40,6 +40,7 @@ export class ContestantService {
     return contestant;
   }
 
+  // TODO: rework on this
   async findOneBy(findContestantDto: FindContestantDto) {
     return await this.contestantRepository.findOne({
       where: { ...findContestantDto },
@@ -47,6 +48,8 @@ export class ContestantService {
   }
 
   async findOne(id: string) {
+    if (!id) return null;
+
     return await this.contestantRepository.findOne({
       where: { id, availability: true },
     });

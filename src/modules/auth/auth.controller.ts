@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post, Query, Version } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
@@ -17,7 +17,10 @@ import { ChangePasswordResponseDto } from 'src/modules/auth/dto/change-password-
 import { ChangePasswordDto } from 'src/modules/auth/dto/change-password.dto';
 
 @ApiTags('Authentication')
-@Controller('auth')
+@Controller({
+  path: 'auth',
+  version: '1',
+})
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

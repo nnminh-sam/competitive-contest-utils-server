@@ -17,7 +17,10 @@ import { JwtClaimDto } from 'src/modules/auth/dto/jwt-claim.dto';
 @ApiTags('Contestants')
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
-@Controller('contestants')
+@Controller({
+  path: 'contestants',
+  version: '1',
+})
 export class ContestantController {
   constructor(private readonly contestantService: ContestantService) {}
 

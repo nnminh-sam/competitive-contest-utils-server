@@ -26,8 +26,10 @@ import { UpdateAffiliationDto } from 'src/modules/affiliation/dto/update-affilia
 
 @ApiTags('Affiliations')
 @ApiBearerAuth()
-@UseGuards(JwtGuard)
-@Controller('affiliations')
+@Controller({
+  path: 'affiliations',
+  version: '1',
+})
 export class AffiliationController {
   constructor(private readonly affiliationService: AffiliationService) {}
 
@@ -46,6 +48,7 @@ export class AffiliationController {
   @ApiResponseWrapper(Affiliation)
   @ApiOkResponse({ description: 'Successfully created new affiliation' })
   @ApiBadRequestResponse({ description: 'Affiliation name has been taken' })
+  @UseGuards(JwtGuard)
   @Post()
   async create(
     @Body()
@@ -58,6 +61,7 @@ export class AffiliationController {
   @ApiOkResponse({ description: 'Successfully updated new affiliation' })
   @ApiBadRequestResponse({ description: 'Affiliation name has been taken' })
   @ApiResponseWrapper(Affiliation)
+  @UseGuards(JwtGuard)
   @Patch('/:id')
   async update(
     @Param('id')

@@ -55,4 +55,9 @@ export class CreateContestDto {
   @IsInt()
   @IsNotEmpty()
   duration: number;
+
+  @ApiProperty({ description: "Contest's type", type: 'string' })
+  @IsString()
+  @IsNotEmpty()
+  type: 'Team' | 'Single' = 'Single';
 }

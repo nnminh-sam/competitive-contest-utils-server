@@ -1,8 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Contestant } from 'src/models/contestant.model';
+import { Team } from 'src/models/team.model';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -63,6 +67,23 @@ export class Contest {
   })
   @Column({ nullable: false })
   duration: number;
+
+  @ApiProperty({
+    description: "Contest's type",
+    type: 'string',
+  })
+  @Column({ default: 'Single' })
+  type: 'Team' | 'Single';
+
+  @ManyToMany(() => Contestant, (contestant) => contestant.contests, {
+    nullable: true,
+  })
+  @JoinTable()
+  participants?: Contestant[];
+
+  @ManyToMany(() => Team, (team) => team.contests, { nullable: true })
+  @JoinTable()
+  teamParticipants?: Team[];
 
   @ApiProperty({
     description: 'Create contest timestamp',

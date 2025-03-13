@@ -2,7 +2,7 @@ import { ApiResponseAddMetadataInterceptor } from './common/interceptors/api-res
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { EnvironmentService } from 'src/environment/environment.service';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ApiRequestBodyToCamelCaseTransformPipe } from 'src/common/pipes/api-request-to-camel-case.pipe';
 import { ApiResponseToSnakeCaseInterceptor } from 'src/common/interceptors/api-response-to-snake-case.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -15,6 +15,7 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true,
   });
+  app.enableVersioning({ type: VersioningType.URI });
 
   app.useGlobalPipes(new ApiRequestBodyToCamelCaseTransformPipe());
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
@@ -22,9 +23,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ApiResponseToSnakeCaseInterceptor());
   app.useGlobalInterceptors(new ApiResponseAddMetadataInterceptor());
 
-  const environmentService = app.get(EnvironmentService);
-
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle('Competitive programming contest utils')
@@ -35,15 +34,16 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
-  console.log('Swagger is running at localhost/api');
+  SwaggerModule.setup('api-document', app, documentFactory);
 
+  const environmentService = app.get(EnvironmentService);
   const port: number = environmentService.port;
   await app.listen(port, () => {
     console.log(`Server is running at port: ${port}`);
     console.log(`Database host: ${environmentService.postgresHost}`);
     console.log(`Database port: ${environmentService.postgresPort}`);
     console.log(`Database name: ${environmentService.postgresDb}`);
+    console.log('Swagger is running at localhost/api-document');
   });
 }
 bootstrap();
