@@ -13,6 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { FindContestantDto } from 'src/modules/contestant/dto/find-contestant.dto';
 import { SignUpDto } from 'src/modules/auth/dto/sign-up.dto';
 import { Team } from 'src/models/team.model';
+import { Contest } from 'src/models/contest.model';
 
 @Injectable()
 export class ContestantService {
@@ -41,7 +42,6 @@ export class ContestantService {
     return contestant;
   }
 
-  // TODO: rework on this
   async findOneBy(findContestantDto: FindContestantDto) {
     return await this.contestantRepository.findOne({
       where: { ...findContestantDto },
@@ -72,6 +72,25 @@ export class ContestantService {
       relations: ['contests'],
     });
     return contestant?.contests;
+  }
+
+  async findAllParticipatedContests(id: string) {
+    if (!id) throw new BadRequestException('Invalid contestant id');
+    const contestant: Contestant = await this.contestantRepository.findOne({
+      where: { id },
+      relations: ['contests', 'team', 'team.contests'],
+    });
+    const result: Contest[] = [];
+    contestant?.contests.forEach((contest) => {
+      result.push(contest);
+    });
+    const team: Team = contestant?.team;
+    if (team) {
+      team?.contests.forEach((contest) => {
+        result.push(contest);
+      });
+    }
+    return result;
   }
 
   async create(signUpDto: SignUpDto) {

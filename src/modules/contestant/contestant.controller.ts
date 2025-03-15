@@ -48,6 +48,18 @@ export class ContestantController {
     return await this.contestantService.findJoinedTeam(contestant.id);
   }
 
+  @ApiOperation({ summary: 'Get list of participated contests of type single' })
+  @ApiResponseArrayWrapper(Contest)
+  @ApiOkResponse({
+    description: 'Returns a list of participated contests of type single',
+  })
+  @Get('participated-single-contests')
+  async findParticipatedSingleContests(
+    @RequestedUser() contestant: Contestant,
+  ) {
+    return await this.contestantService.findParticipatedContests(contestant.id);
+  }
+
   @ApiOperation({ summary: 'Get list of participated contests' })
   @ApiResponseArrayWrapper(Contest)
   @ApiOkResponse({
@@ -55,7 +67,9 @@ export class ContestantController {
   })
   @Get('participated-contests')
   async findParticipatedContests(@RequestedUser() contestant: Contestant) {
-    return await this.contestantService.findParticipatedContests(contestant.id);
+    return await this.contestantService.findAllParticipatedContests(
+      contestant.id,
+    );
   }
 
   @ApiOperation({ summary: 'Update contestant profile' })

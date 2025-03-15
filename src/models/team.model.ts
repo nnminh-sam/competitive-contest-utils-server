@@ -29,12 +29,21 @@ export class Team {
   @Column()
   description: string;
 
-  @ApiProperty({ description: 'Team members', type: Contestant })
+  @ApiProperty({
+    description: 'Team members',
+    type: () => Contestant,
+    isArray: true,
+  })
   @OneToMany(() => Contestant, (contestant) => contestant.team, {
     cascade: true,
   })
   members: Contestant[];
 
+  @ApiProperty({
+    description: 'Participated contests',
+    type: () => Contest,
+    isArray: true,
+  })
   @ManyToMany(() => Contest, (contest) => contest.teamParticipants)
   contests: Contest[];
 
