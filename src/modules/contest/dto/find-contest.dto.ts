@@ -1,6 +1,7 @@
 import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
 import { PaginationAndOrderingDto } from './../../../common/dtos/pagination-and-ordering.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { ContestType } from 'src/models/enums/contest-type.enum';
 export class FindContestDto extends PaginationAndOrderingDto {
   @ApiProperty({
     description: 'Contest name',
@@ -36,5 +37,5 @@ export class FindContestDto extends PaginationAndOrderingDto {
   })
   @IsString()
   @IsOptional()
-  type?: 'Team' | 'Single';
+  type?: ContestType;
 }

@@ -11,6 +11,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -72,7 +73,7 @@ export class ContestController {
       'Contest not found, contestant not found or contestant has been registered',
   })
   @UseGuards(JwtGuard)
-  @Post(':id/register-single')
+  @Post('/:id/register-single')
   async registerSingleContestant(
     @Param('id') id: string,
     @Body() registerSingleContestDto: RegisterSingleContestDto,
@@ -98,7 +99,7 @@ export class ContestController {
     @Param('id') id: string,
     @Body() registerTeamContestDto: RegisterTeamContestDto,
   ) {
-    return this.contestService.registerSingleContestant(
+    return this.contestService.registerTeamContestant(
       id,
       registerTeamContestDto.teamId,
     );

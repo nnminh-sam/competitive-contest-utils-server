@@ -5,7 +5,9 @@ import {
   IsOptional,
   IsString,
   IsInt,
+  IsEnum,
 } from 'class-validator';
+import { ContestType } from 'src/models/enums/contest-type.enum';
 
 export class CreateContestDto {
   @ApiProperty({ description: "Contest's name", type: 'string' })
@@ -35,11 +37,9 @@ export class CreateContestDto {
   @ApiProperty({
     description: "Contest's banner URL",
     type: 'string',
-    required: false,
   })
   @IsString()
-  @IsOptional()
-  banner?: string;
+  banner: string;
 
   @ApiProperty({
     description: "Contest's start timestamp",
@@ -56,8 +56,11 @@ export class CreateContestDto {
   @IsNotEmpty()
   duration: number;
 
-  @ApiProperty({ description: "Contest's type", type: 'string' })
-  @IsString()
-  @IsNotEmpty()
-  type: 'Team' | 'Single' = 'Single';
+  @ApiProperty({
+    description: "Contest's type",
+    type: 'string',
+    default: ContestType.SINGLE,
+  })
+  @IsEnum(ContestType)
+  type?: ContestType;
 }

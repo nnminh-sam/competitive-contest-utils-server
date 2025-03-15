@@ -49,12 +49,24 @@ export class Contestant {
   @Column({ enum: Gender, default: Gender.OTHER })
   gender: Gender;
 
+  @ApiProperty({
+    description: 'Joined team',
+    name: 'team',
+    type: Team,
+    required: false,
+  })
   @ManyToOne(() => Team, (team) => team.members, {
     onDelete: 'SET NULL',
     nullable: true,
   })
   team?: Team;
 
+  @ApiProperty({
+    description: 'Participated contests',
+    name: 'contests',
+    type: [Contest],
+    required: false,
+  })
   @ManyToMany(() => Contest, (contest) => contest.participants)
   contests?: Contest[];
 

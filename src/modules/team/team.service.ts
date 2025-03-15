@@ -17,11 +17,30 @@ export class TeamService {
     private readonly contestantService: ContestantService,
   ) {}
 
+  async findOne(id: string) {
+    if (!id) return null;
+    return await this.teamRepository.findOne({
+      where: { id },
+      relations: ['members'],
+    });
+  }
+
+  async findParticipatedContests(id: string) {
+    const team: Team = await this.teamRepository.findOne({
+      where: { id },
+      relations: ['contests'],
+    });
+    return team?.contests;
+  }
+
   async create(createTeamDto: CreateTeamDto) {
     const isTeamNameUsed = await this.teamRepository.existsBy({
       name: createTeamDto.name,
     });
     if (isTeamNameUsed) throw new BadRequestException('Name has been taken');
+
+    if (createTeamDto.members.length !== 3)
+      throw new BadRequestException('Invalid team size! Team size must be 3');
 
     const contestants: Contestant[] = await Promise.all(
       createTeamDto.members.map((email: string) => {
@@ -44,14 +63,6 @@ export class TeamService {
     }
   }
 
-  async findOne(id: string) {
-    if (!id) return null;
-    return await this.teamRepository.findOne({
-      where: { id },
-      relations: ['members'],
-    });
-  }
-
   async update(id: string, updateTeamDto: UpdateTeamDto) {
     const isTeamNameTaken =
       updateTeamDto?.name &&
@@ -59,6 +70,9 @@ export class TeamService {
         name: updateTeamDto?.name,
       }));
     if (isTeamNameTaken) throw new BadRequestException('Name has been taken');
+
+    if (updateTeamDto.members.length !== 3)
+      throw new BadRequestException('Invalid team size! Team size must be 3');
 
     const team: Team = await this.teamRepository.findOne({
       where: { id },

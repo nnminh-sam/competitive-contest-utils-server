@@ -12,6 +12,7 @@ import { camelCaseToNormal } from 'src/helpers';
 import * as bcrypt from 'bcrypt';
 import { FindContestantDto } from 'src/modules/contestant/dto/find-contestant.dto';
 import { SignUpDto } from 'src/modules/auth/dto/sign-up.dto';
+import { Team } from 'src/models/team.model';
 
 @Injectable()
 export class ContestantService {
@@ -53,6 +54,24 @@ export class ContestantService {
     return await this.contestantRepository.findOne({
       where: { id, availability: true },
     });
+  }
+
+  async findJoinedTeam(id: string) {
+    if (!id) throw new BadRequestException('Invalid contestant id');
+    const contestant: Contestant = await this.contestantRepository.findOne({
+      where: { id },
+      relations: ['team', 'team.members'],
+    });
+    return contestant?.team;
+  }
+
+  async findParticipatedContests(id: string) {
+    if (!id) throw new BadRequestException('Invalid contestant id');
+    const contestant: Contestant = await this.contestantRepository.findOne({
+      where: { id },
+      relations: ['contests'],
+    });
+    return contestant?.contests;
   }
 
   async create(signUpDto: SignUpDto) {
