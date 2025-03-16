@@ -96,8 +96,37 @@ export class AuthService {
       },
       { expiresIn: '5m' },
     );
-    const url: string = `localhost:5173/reset-password?token${token}`;
-    await this.mailingService.sendEmail(email, 'Reset password', url);
+
+    const resetUrl: string = `http://localhost:5173/reset-password?token=${token}`;
+
+    const html: string = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h2 style="color: #007bff;">Password Reset Request</h2>
+        <p>Hello ${contestant.email},</p>
+        <p>We received a request to reset your account password. Click the button below to reset it:</p>
+        <p style="text-align: center;">
+          <a href="${resetUrl}" 
+            style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007bff; 
+                    text-decoration: none; border-radius: 5px; font-weight: bold;">
+            Reset Password
+          </a>
+        </p>
+        <p>If the button above does not work, you can also copy and paste the following link into your browser:</p>
+        <p style="word-break: break-all; background-color: #f4f4f4; padding: 10px; border-radius: 5px;">
+          <a href="${resetUrl}" style="color: #007bff;">${resetUrl}</a>
+        </p>
+        <p><strong>Note:</strong> This link is valid for <strong>5 minutes</strong>. If you did not request a password reset, please ignore this email.</p>
+        <p>Best Regards,<br/>ITMC Club</p>
+      </div>
+    `;
+
+    await this.mailingService.sendEmail(
+      email,
+      'Reset Password',
+      resetUrl,
+      html,
+    );
+
     return {
       token,
       expiresIn: '5m',

@@ -60,4 +60,8 @@ export class EnvironmentService {
   get emailPort(): string {
     return this.configService.get<string>('EMAIL_PORT');
   }
+
+  get FeHost(): string {
+    return this.configService.get<string>('FE_HOST');
+  }
 }

@@ -30,7 +30,7 @@ export class ContestantService {
       .where('contestants.email = :email', { email })
       .addSelect('contestants.password')
       .getOne();
-    if (!contestant) throw new BadRequestException('Invalid email');
+    if (!contestant) throw new BadRequestException('Contestant not found');
 
     const matchedPassword: boolean = bcrypt.compareSync(
       password,

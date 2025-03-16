@@ -44,6 +44,9 @@ export class EnvironmentVariablesDto {
 
   @IsNumber()
   EMAIL_PORT: number;
+
+  @IsString()
+  FE_HOST: string;
 }
 
 export function validate(
