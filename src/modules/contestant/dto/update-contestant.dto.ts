@@ -7,7 +7,7 @@ export class UpdateContestantDto {
     description: 'Email of the contestant',
   })
   @IsOptional()
-  @IsEmail()
+  @IsEmail({}, { message: 'Invalid email' })
   email?: string;
 
   @ApiPropertyOptional({
