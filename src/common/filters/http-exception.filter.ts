@@ -4,9 +4,8 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
+import { isArray } from 'class-validator';
 import { Request, Response } from 'express';
-import { url } from 'inspector';
-import { timestamp } from 'rxjs';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -15,10 +14,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request: Request = context.getRequest();
     const response: Response = context.getResponse();
     const status = exception.getStatus();
+    const exceptionResponse = exception.getResponse() as Record<string, any>;
+    const details = exceptionResponse.message;
+    const message: string = isArray(details) ? details[0] : details;
 
     response.status(status).json({
       statusCode: status,
-      message: exception.message,
+      message,
+      ...(isArray(details) &&
+        details.length > 1 && {
+          details,
+        }),
       timestamp: new Date().toISOString(),
       path: request.url,
     });

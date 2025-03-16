@@ -6,6 +6,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ApiRequestBodyToCamelCaseTransformPipe } from 'src/common/pipes/api-request-to-camel-case.pipe';
 import { ApiResponseToSnakeCaseInterceptor } from 'src/common/interceptors/api-response-to-snake-case.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,8 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ApiResponseToSnakeCaseInterceptor());
   app.useGlobalInterceptors(new ApiResponseAddMetadataInterceptor());
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   app.setGlobalPrefix('api');
 

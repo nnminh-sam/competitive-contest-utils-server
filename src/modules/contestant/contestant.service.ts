@@ -94,21 +94,20 @@ export class ContestantService {
   }
 
   async create(signUpDto: SignUpDto) {
-    const validatingFields: string[] = ['email', 'username', 'studentId'];
-    const validationResults: boolean[] = await Promise.all(
-      validatingFields.map((value: string) => {
-        return this.contestantRepository.existsBy({ [value]: value });
-      }),
-    );
-    const invalidResult = validationResults.includes(true);
-    if (invalidResult) {
-      const exceptionMessage: string = validationResults
-        .map((value: boolean, index: number) => {
-          return value ? '' : camelCaseToNormal(validatingFields.at(index));
-        })
-        .join(', ');
-      throw new BadRequestException(`${exceptionMessage} is taken`);
-    }
+    const isEmailTaken: boolean = await this.contestantRepository.existsBy({
+      email: signUpDto.email,
+    });
+    if (isEmailTaken) throw new BadRequestException('Email is taken');
+
+    const isUsernameTaken: boolean = await this.contestantRepository.existsBy({
+      username: signUpDto.username,
+    });
+    if (isUsernameTaken) throw new BadRequestException('Username is taken');
+
+    const isStudentIdTaken: boolean = await this.contestantRepository.existsBy({
+      studentId: signUpDto.studentId,
+    });
+    if (isStudentIdTaken) throw new BadRequestException('Student id is taken');
 
     try {
       const contestantEntity: Contestant = this.contestantRepository.create({
@@ -123,6 +122,32 @@ export class ContestantService {
   }
 
   async update(id: string, updateContestantDto: UpdateContestantDto) {
+    const isStudentIdTaken = await this.contestantRepository.findOneBy({
+      studentId: updateContestantDto.studentId,
+    });
+    if (
+      updateContestantDto?.studentId &&
+      isStudentIdTaken &&
+      isStudentIdTaken.id !== id
+    )
+      throw new BadRequestException('Student id is taken');
+
+    const isEmailTaken = await this.contestantRepository.findOneBy({
+      email: updateContestantDto.email,
+    });
+    if (updateContestantDto?.email && isEmailTaken && isEmailTaken.id !== id)
+      throw new BadRequestException('Email is taken');
+
+    const isUsernameTaken = await this.contestantRepository.findOneBy({
+      username: updateContestantDto.username,
+    });
+    if (
+      updateContestantDto?.username &&
+      isUsernameTaken &&
+      isUsernameTaken.id !== id
+    )
+      throw new BadRequestException('Username is taken');
+
     try {
       const res = await this.contestantRepository.update(
         { id, availability: true },

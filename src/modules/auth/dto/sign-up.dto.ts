@@ -8,8 +8,8 @@ export class SignUpDto {
     example: 'john@example.com',
     name: 'email',
   })
-  @IsEmail()
   @IsNotEmpty()
+  @IsEmail({}, { message: 'Invalid email' })
   email: string;
 
   @ApiProperty({
@@ -17,8 +17,8 @@ export class SignUpDto {
     example: 'john_doe',
     name: 'username',
   })
-  @IsString()
   @IsNotEmpty()
+  @IsString({ message: 'Invalid username' })
   username: string;
 
   @ApiProperty({
@@ -26,8 +26,8 @@ export class SignUpDto {
     example: 'password123',
     name: 'password',
   })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   password: string;
 
   @ApiProperty({
@@ -35,8 +35,8 @@ export class SignUpDto {
     example: 'John',
     name: 'first_name',
   })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   firstName: string;
 
   @ApiProperty({
@@ -44,8 +44,8 @@ export class SignUpDto {
     example: 'Doe',
     name: 'last_name',
   })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   lastName: string;
 
   @ApiProperty({
@@ -53,8 +53,8 @@ export class SignUpDto {
     example: '12345678',
     name: 'student_id',
   })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   studentId: string;
 
   @ApiProperty({
@@ -62,8 +62,8 @@ export class SignUpDto {
     example: '2024',
     name: 'school_year',
   })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   schoolYear: string;
 
   @ApiProperty({
@@ -72,7 +72,7 @@ export class SignUpDto {
     example: Gender.MALE,
     name: 'gender',
   })
-  @IsEnum(Gender)
   @IsNotEmpty()
+  @IsEnum(Gender)
   gender: Gender;
 }
