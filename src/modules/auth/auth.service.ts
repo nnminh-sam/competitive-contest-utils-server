@@ -16,6 +16,7 @@ import { AuthResponseDto } from 'src/modules/auth/dto/auth-response.dto';
 import { SignInDto } from 'src/modules/auth/dto/sign-in.dto';
 import { ChangePasswordDto } from 'src/modules/auth/dto/change-password.dto';
 import { ChangePasswordResponseDto } from 'src/modules/auth/dto/change-password-response.dto';
+import { MailingService } from 'src/modules/mailing/mailing.service';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
     private readonly redisService: RedisService,
     private readonly jwtService: JwtService,
     private readonly contestantService: ContestantService,
+    private readonly mailingService: MailingService,
   ) {}
 
   private isTokenExpired(exp: number) {
@@ -45,7 +47,6 @@ export class AuthService {
 
   validateToken(token: string) {
     const jwtClaimDto: JwtClaimDto = this.extractClaim(token);
-    console.log('🚀 ~ AuthService ~ validateToken ~ jwtClaimDto:', jwtClaimDto);
     if (!jwtClaimDto?.exp) throw new BadRequestException('Invalid token');
 
     const tokenExpired = this.isTokenExpired(jwtClaimDto.exp);
@@ -95,6 +96,8 @@ export class AuthService {
       },
       { expiresIn: '5m' },
     );
+    const url: string = `localhost:5173/reset-password?token${token}`;
+    await this.mailingService.sendEmail(email, 'Reset password', url);
     return {
       token,
       expiresIn: '5m',

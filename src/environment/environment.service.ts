@@ -44,4 +44,20 @@ export class EnvironmentService {
   get redisBlacklistPort(): number {
     return this.configService.get<number>('REDIS_BLACKLIST_PORT');
   }
+
+  get emailHost(): string {
+    return this.configService.get<string>('EMAIL_HOST');
+  }
+
+  get emailUser(): string {
+    return this.configService.get<string>('EMAIL_USER');
+  }
+
+  get emailPass(): string {
+    return this.configService.get<string>('EMAIL_PASS');
+  }
+
+  get emailPort(): string {
+    return this.configService.get<string>('EMAIL_PORT');
+  }
 }

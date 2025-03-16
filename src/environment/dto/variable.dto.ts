@@ -32,6 +32,18 @@ export class EnvironmentVariablesDto {
 
   @IsNumber()
   REDIS_BLACKLIST_PORT: number;
+
+  @IsString()
+  EMAIL_HOST: string;
+
+  @IsString()
+  EMAIL_USER: string;
+
+  @IsString()
+  EMAIL_PASS: string;
+
+  @IsNumber()
+  EMAIL_PORT: number;
 }
 
 export function validate(

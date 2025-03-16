@@ -8,9 +8,11 @@ import { EnvironmentService } from 'src/environment/environment.service';
 import { DatabaseModule } from 'src/database/database.module';
 import { JwtStrategy } from 'src/modules/auth/strategies/jwt.strategy';
 import { LocalStrategy } from 'src/modules/auth/strategies/local.strategy';
+import { MailingModule } from 'src/modules/mailing/mailing.module';
 
 @Module({
   imports: [
+    MailingModule,
     DatabaseModule,
     EnvironmentModule,
     ContestantModule,

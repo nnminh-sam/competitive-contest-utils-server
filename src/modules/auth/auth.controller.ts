@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Query, Version } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  Version,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
@@ -15,6 +23,7 @@ import { SignInDto } from 'src/modules/auth/dto/sign-in.dto';
 import { SignUpDto } from 'src/modules/auth/dto/sign-up.dto';
 import { ChangePasswordResponseDto } from 'src/modules/auth/dto/change-password-response.dto';
 import { ChangePasswordDto } from 'src/modules/auth/dto/change-password.dto';
+import { ResetPasswordDto } from 'src/modules/auth/dto/reset-password.dto';
 
 @ApiTags('Authentication')
 @Controller({
@@ -50,6 +59,7 @@ export class AuthController {
   @ApiNotFoundResponse({
     description: 'Cannot find contestant from the given email',
   })
+  @HttpCode(200)
   @Post('forgot-password')
   async forgotPassword(@Body() changePasswordDto: ChangePasswordDto) {
     return await this.authService.forgotPassword(changePasswordDto);
@@ -61,11 +71,12 @@ export class AuthController {
   @ApiResponseWrapper(Contestant)
   @ApiOkResponse({ description: 'Return contestant object' })
   @ApiBadRequestResponse({ description: 'Token expired or incorrect token' })
+  @HttpCode(200)
   @Post('reset-password')
-  async resetPassword(
-    @Query('token') token: string,
-    @Query('new_password') new_password: string,
-  ) {
-    return await this.authService.resetPassword(token, new_password);
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return await this.authService.resetPassword(
+      resetPasswordDto.token,
+      resetPasswordDto.newPassword,
+    );
   }
 }
