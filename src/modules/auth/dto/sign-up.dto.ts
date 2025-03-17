@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Gender } from 'src/models/enums/gender.enum';
 
 export class SignUpDto {
@@ -62,9 +62,9 @@ export class SignUpDto {
     example: '2024',
     name: 'school_year',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  schoolYear: string;
+  schoolYear?: string;
 
   @ApiProperty({
     description: 'Gender of the user',
@@ -72,7 +72,7 @@ export class SignUpDto {
     example: Gender.MALE,
     name: 'gender',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(Gender)
-  gender: Gender;
+  gender?: Gender;
 }

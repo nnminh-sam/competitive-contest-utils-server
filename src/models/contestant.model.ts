@@ -42,7 +42,7 @@ export class Contestant {
   studentId: string;
 
   @ApiProperty({ description: 'Contestant school year', name: 'school_year' })
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   schoolYear: string;
 
   @ApiProperty({ description: 'Contestant gender', name: 'gender' })

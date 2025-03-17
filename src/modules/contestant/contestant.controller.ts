@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -78,14 +78,12 @@ export class ContestantController {
     description: 'Returns the updated contestant object',
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  @Patch()
+  @Patch(':id')
   async update(
-    @RequestedUser() contestant: Contestant,
+    @Param('id') id: string,
+
     @Body() updateContestantDto: UpdateContestantDto,
   ) {
-    return await this.contestantService.update(
-      contestant.id,
-      updateContestantDto,
-    );
+    return await this.contestantService.update(id, updateContestantDto);
   }
 }
