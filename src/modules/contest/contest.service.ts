@@ -87,6 +87,19 @@ export class ContestService {
     });
   }
 
+  async findParticipatedContests(contestantId: string) {
+    const participations = await this.contestParticipationRepository.find({
+      where: { contestantId },
+      relations: ['contest'],
+    });
+
+    const contests = participations.map(
+      (participation) => participation.contest,
+    );
+
+    return contests;
+  }
+
   async create(createContestDto: CreateContestDto) {
     await this.checkUniqueContestName(createContestDto.name);
 
@@ -100,14 +113,6 @@ export class ContestService {
   }
 
   async registerContestant(contestId: string, contestantId: string) {
-    console.log(
-      '🚀 ~ ContestService ~ registerContestant ~ contestId:',
-      contestId,
-    );
-    console.log(
-      '🚀 ~ ContestService ~ registerContestant ~ contestantId:',
-      contestantId,
-    );
     const contest: Contest = await this.findOne(contestId);
 
     const contestant: Contestant =

@@ -39,6 +39,19 @@ import { AuthPayload } from 'src/modules/auth/dto/jwt-claim.dto';
 export class ContestController {
   constructor(private readonly contestService: ContestService) {}
 
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '[Role: Contestant] Get all participated contests of a contestant',
+  })
+  @ApiResponseWrapper(Contest)
+  @ApiOkResponse({ description: 'Contests found' })
+  @UseGuards(JwtRolesGuard)
+  @Roles(RoleEnum.CONTESTANT)
+  @Get('/participations')
+  async getParticipatedContest(@RequestedUser() claims: AuthPayload) {
+    return await this.contestService.findParticipatedContests(claims.sub);
+  }
+
   @ApiOperation({ summary: '[Role: None - Public API] Find contest by ID' })
   @ApiResponseWrapper(Contest)
   @ApiOkResponse({ description: 'Contest found' })
@@ -70,8 +83,7 @@ export class ContestController {
 
   @ApiBearerAuth()
   @ApiOperation({
-    summary:
-      '[Role: Contestant] Contestant register for a contest of a single type contest',
+    summary: '[Role: Contestant] Contestant participate for a contest',
   })
   @ApiResponseWrapper(Contest)
   @ApiOkResponse({ description: 'Registered created successfully' })
@@ -82,7 +94,7 @@ export class ContestController {
   @UseGuards(JwtRolesGuard)
   @Roles(RoleEnum.CONTESTANT)
   @Post('/:id/participations')
-  async registerSingleContestant(
+  async participateContest(
     @Param('id') id: string,
     @RequestedUser() claims: AuthPayload,
   ) {
