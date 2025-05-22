@@ -38,11 +38,6 @@ export class ContestService {
    */
   private checkParticipatedContest(contestant: Contestant, contest: Contest) {
     const participations: ContestParticipation[] = contestant?.participations;
-    console.log(
-      '🚀 ~ ContestService ~ checkParticipatedContest ~ participations:',
-      participations,
-    );
-
     if (!participations) {
       return false;
     }
@@ -105,15 +100,18 @@ export class ContestService {
   }
 
   async registerContestant(contestId: string, contestantId: string) {
+    console.log(
+      '🚀 ~ ContestService ~ registerContestant ~ contestId:',
+      contestId,
+    );
+    console.log(
+      '🚀 ~ ContestService ~ registerContestant ~ contestantId:',
+      contestantId,
+    );
     const contest: Contest = await this.findOne(contestId);
-    console.log('🚀 ~ ContestService ~ registerContestant ~ contest:', contest);
 
     const contestant: Contestant =
       await this.contestantService.findOne(contestantId);
-    console.log(
-      '🚀 ~ ContestService ~ registerContestant ~ contestant:',
-      contestant,
-    );
 
     const isContestParticipated = this.checkParticipatedContest(
       contestant,

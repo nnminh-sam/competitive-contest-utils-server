@@ -29,6 +29,7 @@ import { Contestant } from 'src/models/contestant.model';
 import { JwtRolesGuard } from 'src/common/guards/jwt-roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RoleEnum } from 'src/models/enums/role.enum';
+import { AuthPayload } from 'src/modules/auth/dto/jwt-claim.dto';
 
 @ApiTags('Contests')
 @Controller({
@@ -83,9 +84,9 @@ export class ContestController {
   @Post('/:id/participations')
   async registerSingleContestant(
     @Param('id') id: string,
-    @RequestedUser() contestant: Contestant,
+    @RequestedUser() claims: AuthPayload,
   ) {
-    return this.contestService.registerContestant(id, contestant.id);
+    return this.contestService.registerContestant(id, claims.sub);
   }
 
   @ApiBearerAuth()

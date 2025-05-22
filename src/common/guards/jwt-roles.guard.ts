@@ -21,7 +21,6 @@ export class JwtRolesGuard extends AuthGuard('jwt') {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    // First, check JWT authentication
     const jwtResult = super.canActivate(context);
 
     const handleJwtResult = (isValid: boolean) => {
@@ -29,7 +28,6 @@ export class JwtRolesGuard extends AuthGuard('jwt') {
         return false;
       }
 
-      // After JWT is valid, check roles
       const requiredRoles = this.reflector.getAllAndOverride<RoleEnum[]>(
         ROLES_KEY,
         [context.getHandler(), context.getClass()],
@@ -41,7 +39,6 @@ export class JwtRolesGuard extends AuthGuard('jwt') {
 
       const request = context.switchToHttp().getRequest<Request>();
       const user = request.user as AuthPayload;
-      console.log('🚀 ~ JwtRolesGuard ~ handleJwtResult ~ user:', user);
 
       if (!user) {
         throw new UnauthorizedException('User not found in request');
