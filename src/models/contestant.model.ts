@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Affiliation } from 'src/models/affiliation.model';
+import { ContestParticipation } from 'src/models/contest-participation.model';
 import { Contest } from 'src/models/contest.model';
 import { Gender } from 'src/models/enums/gender.enum';
+import { RoleEnum } from 'src/models/enums/role.enum';
 import { Team } from 'src/models/team.model';
 import {
   Column,
@@ -8,6 +11,7 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -26,6 +30,7 @@ export class Contestant {
   @Column({ nullable: false, unique: true })
   username: string;
 
+  @ApiProperty({ description: 'Contestant account password' })
   @Column({ nullable: false, select: false })
   password: string;
 
@@ -41,9 +46,14 @@ export class Contestant {
   @Column({ nullable: false, unique: true })
   studentId: string;
 
-  @ApiProperty({ description: 'Contestant school year', name: 'school_year' })
-  @Column({ nullable: true })
-  schoolYear: string;
+  @ApiProperty({
+    description: 'Contestant affiliation ID',
+    name: 'affiliation_id',
+  })
+  @ManyToOne(() => Affiliation, (affiliation) => affiliation.contestants, {
+    nullable: false,
+  })
+  affiliation: Affiliation;
 
   @ApiProperty({ description: 'Contestant gender', name: 'gender' })
   @Column({ enum: Gender, default: Gender.OTHER })
@@ -62,17 +72,28 @@ export class Contestant {
   team?: Team;
 
   @ApiProperty({
-    description: 'Participated contests',
-    name: 'contests',
-    type: [Contest],
+    description: 'Contest participations',
+    name: 'participations',
+    type: [ContestParticipation],
     required: false,
+    readOnly: true,
   })
-  @ManyToMany(() => Contest, (contest) => contest.participants)
-  contests?: Contest[];
+  @OneToMany(
+    () => ContestParticipation,
+    (contestParticipation) => contestParticipation.contestant,
+  )
+  participations?: ContestParticipation[];
 
   @ApiProperty({ description: 'Contestant availability', name: 'availability' })
   @Column({ default: true, select: false })
   availability: boolean;
+
+  @Column({
+    enum: RoleEnum,
+    default: RoleEnum.CONTESTANT,
+    nullable: true,
+  })
+  role: RoleEnum;
 
   @ApiProperty({
     description: 'Create contestant timestamp',

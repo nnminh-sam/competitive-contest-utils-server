@@ -17,8 +17,11 @@ import {
 } from '@nestjs/swagger';
 import { ApiResponseArrayWrapper } from 'src/common/decorators/api-response-array-wrapper.decorator';
 import { ApiResponseWrapper } from 'src/common/decorators/api-response-wrapper.decorator';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { JwtRolesGuard } from 'src/common/guards/jwt-roles.guard';
 import { JwtGuard } from 'src/common/guards/jwt.guard';
 import { Contest } from 'src/models/contest.model';
+import { RoleEnum } from 'src/models/enums/role.enum';
 import { Team } from 'src/models/team.model';
 import { CreateTeamDto } from 'src/modules/team/dto/create-team.dto';
 import { UpdateTeamDto } from 'src/modules/team/dto/update-team.dto';
@@ -26,7 +29,6 @@ import { TeamService } from 'src/modules/team/team.service';
 
 @ApiTags('Teams')
 @ApiBearerAuth()
-@UseGuards(JwtGuard)
 @Controller({
   path: 'teams',
   version: '1',
@@ -34,28 +36,24 @@ import { TeamService } from 'src/modules/team/team.service';
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
-  @ApiOperation({ summary: 'Find participated contests' })
-  @ApiResponseArrayWrapper(Contest)
-  @ApiOkResponse({ description: 'List of participated contests' })
-  @Get('/:id/participated-contests')
-  async findParticipatedContests(@Param('id') id: string) {
-    return await this.teamService.findParticipatedContests(id);
-  }
-
-  @ApiOperation({ summary: 'Find team by id' })
+  @ApiOperation({ summary: '[Role: Contestant] Find team by id' })
   @ApiResponseWrapper(Team)
   @ApiOkResponse({ description: 'Team found' })
+  @UseGuards(JwtRolesGuard)
+  @Roles(RoleEnum.CONTESTANT)
   @Get('/:id')
   async findOne(@Param('id') id: string) {
     return await this.teamService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Create new team' })
+  @ApiOperation({ summary: '[Role: Contestant] Create new team' })
   @ApiResponseWrapper(Team)
   @ApiOkResponse({ description: 'Create team success' })
   @ApiBadRequestResponse({
     description: 'Team name has been taken or team member not exist',
   })
+  @UseGuards(JwtGuard)
+  @Roles(RoleEnum.CONTESTANT)
   @Post()
   async create(
     @Body()
@@ -64,12 +62,14 @@ export class TeamController {
     return await this.teamService.create(createTeamDto);
   }
 
-  @ApiOperation({ summary: 'Update team information' })
+  @ApiOperation({ summary: '[Role: Contestant] Update team information' })
   @ApiResponseWrapper(Team)
   @ApiOkResponse({ description: 'Update team success' })
   @ApiBadRequestResponse({
     description: 'Team name has been taken or team member not exist',
   })
+  @UseGuards(JwtRolesGuard)
+  @Roles(RoleEnum.CONTESTANT)
   @Patch('/:id')
   async update(
     @Param('id') id: string,

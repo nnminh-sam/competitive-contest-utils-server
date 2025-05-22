@@ -25,14 +25,6 @@ export class TeamService {
     });
   }
 
-  async findParticipatedContests(id: string) {
-    const team: Team = await this.teamRepository.findOne({
-      where: { id },
-      relations: ['contests'],
-    });
-    return team?.contests;
-  }
-
   async create(createTeamDto: CreateTeamDto) {
     const isTeamNameUsed = await this.teamRepository.existsBy({
       name: createTeamDto.name,

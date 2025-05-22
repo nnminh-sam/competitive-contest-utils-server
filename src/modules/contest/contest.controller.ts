@@ -11,7 +11,6 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
-  ApiBody,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -25,10 +24,13 @@ import { ContestService } from 'src/modules/contest/contest.service';
 import { FindContestDto } from 'src/modules/contest/dto/find-contest.dto';
 import { ApiResponseArrayWrapper } from 'src/common/decorators/api-response-array-wrapper.decorator';
 import { RegisterSingleContestDto } from 'src/modules/contest/dto/register-single-contest.dto';
-import { RegisterTeamContestDto } from 'src/modules/contest/dto/register-team-contest.dto';
+import { RequestedUser } from 'src/common/decorators/user-claim.decorator';
+import { Contestant } from 'src/models/contestant.model';
+import { JwtRolesGuard } from 'src/common/guards/jwt-roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { RoleEnum } from 'src/models/enums/role.enum';
 
 @ApiTags('Contests')
-@ApiBearerAuth()
 @Controller({
   path: 'contests',
   version: '1',
@@ -36,7 +38,7 @@ import { RegisterTeamContestDto } from 'src/modules/contest/dto/register-team-co
 export class ContestController {
   constructor(private readonly contestService: ContestService) {}
 
-  @ApiOperation({ summary: 'Find contest by ID' })
+  @ApiOperation({ summary: '[Role: None - Public API] Find contest by ID' })
   @ApiResponseWrapper(Contest)
   @ApiOkResponse({ description: 'Contest found' })
   @ApiBadRequestResponse({ description: 'Contest not found' })
@@ -45,7 +47,7 @@ export class ContestController {
     return await this.contestService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Find contests' })
+  @ApiOperation({ summary: '[Role: None - Public API] Find contests' })
   @ApiResponseArrayWrapper(Contest)
   @ApiOkResponse({ description: 'Success' })
   @Get('')
@@ -53,18 +55,22 @@ export class ContestController {
     return await this.contestService.find(findContestDto);
   }
 
-  @ApiOperation({ summary: 'Create a new contest' })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[Role: Admin] Create a new contest' })
   @ApiResponseWrapper(Contest)
   @ApiOkResponse({ description: 'Contest created successfully' })
   @ApiBadRequestResponse({ description: 'Contest name has been taken' })
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtRolesGuard)
+  @Roles(RoleEnum.ADMIN)
   @Post()
   async create(@Body() createContestDto: CreateContestDto) {
     return await this.contestService.create(createContestDto);
   }
 
+  @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Contestant register for a contest of a single type contest',
+    summary:
+      '[Role: Contestant] Contestant register for a contest of a single type contest',
   })
   @ApiResponseWrapper(Contest)
   @ApiOkResponse({ description: 'Registered created successfully' })
@@ -72,44 +78,23 @@ export class ContestController {
     description:
       'Contest not found, contestant not found or contestant has been registered',
   })
-  @UseGuards(JwtGuard)
-  @Post('/:id/register-single')
+  @UseGuards(JwtRolesGuard)
+  @Roles(RoleEnum.CONTESTANT)
+  @Post('/:id/participations')
   async registerSingleContestant(
     @Param('id') id: string,
-    @Body() registerSingleContestDto: RegisterSingleContestDto,
+    @RequestedUser() contestant: Contestant,
   ) {
-    return this.contestService.registerSingleContestant(
-      id,
-      registerSingleContestDto.contestantId,
-    );
+    return this.contestService.registerContestant(id, contestant.id);
   }
 
-  @ApiOperation({
-    summary: 'Tean register for a contest of a team type contest',
-  })
-  @ApiResponseWrapper(Contest)
-  @ApiOkResponse({ description: 'Registered created successfully' })
-  @ApiBadRequestResponse({
-    description:
-      'Contest not found, team not found or team has been registered',
-  })
-  @UseGuards(JwtGuard)
-  @Post(':id/register-team')
-  async registerTeamContestant(
-    @Param('id') id: string,
-    @Body() registerTeamContestDto: RegisterTeamContestDto,
-  ) {
-    return this.contestService.registerTeamContestant(
-      id,
-      registerTeamContestDto.teamId,
-    );
-  }
-
-  @ApiOperation({ summary: 'Update contest information' })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[Role: Admin] Update contest information' })
   @ApiResponseWrapper(Contest)
   @ApiOkResponse({ description: 'Contest updated successfully' })
   @ApiBadRequestResponse({ description: 'Contest not found' })
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtRolesGuard)
+  @Roles(RoleEnum.ADMIN)
   @Patch('/:id')
   async update(
     @Param('id') id: string,

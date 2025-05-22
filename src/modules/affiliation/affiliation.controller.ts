@@ -17,15 +17,18 @@ import {
 } from '@nestjs/swagger';
 import { ApiResponseArrayWrapper } from 'src/common/decorators/api-response-array-wrapper.decorator';
 import { ApiResponseWrapper } from 'src/common/decorators/api-response-wrapper.decorator';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { JwtRolesGuard } from 'src/common/guards/jwt-roles.guard';
 import { JwtGuard } from 'src/common/guards/jwt.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Affiliation } from 'src/models/affiliation.model';
+import { RoleEnum } from 'src/models/enums/role.enum';
 import { AffiliationService } from 'src/modules/affiliation/affiliation.service';
 import { CreateAffiliationDto } from 'src/modules/affiliation/dto/create-affiliation.dto';
 import { FindAffiliationDto } from 'src/modules/affiliation/dto/find-affiliation.dto';
 import { UpdateAffiliationDto } from 'src/modules/affiliation/dto/update-affiliation.dto';
 
 @ApiTags('Affiliations')
-@ApiBearerAuth()
 @Controller({
   path: 'affiliations',
   version: '1',
@@ -33,7 +36,7 @@ import { UpdateAffiliationDto } from 'src/modules/affiliation/dto/update-affilia
 export class AffiliationController {
   constructor(private readonly affiliationService: AffiliationService) {}
 
-  @ApiOperation({ description: 'Find affiliations' })
+  @ApiOperation({ summary: '[Role: None - Public API] Find affiliations' })
   @ApiResponseArrayWrapper(Affiliation)
   @ApiOkResponse({ description: 'Find process completed' })
   @Get()
@@ -44,11 +47,15 @@ export class AffiliationController {
     return await this.affiliationService.find(findAffiliationDto);
   }
 
-  @ApiOperation({ description: 'Create new affiliation' })
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '[Role: Admin] Create new affiliation',
+  })
   @ApiResponseWrapper(Affiliation)
   @ApiOkResponse({ description: 'Successfully created new affiliation' })
   @ApiBadRequestResponse({ description: 'Affiliation name has been taken' })
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtRolesGuard)
+  @Roles(RoleEnum.ADMIN)
   @Post()
   async create(
     @Body()
@@ -57,11 +64,13 @@ export class AffiliationController {
     return await this.affiliationService.create(createAffiliationDto);
   }
 
-  @ApiOperation({ description: 'Update new affiliation' })
-  @ApiOkResponse({ description: 'Successfully updated new affiliation' })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '[Role: Admin] Update affiliation' })
+  @ApiOkResponse({ description: 'Successfully updated affiliation' })
   @ApiBadRequestResponse({ description: 'Affiliation name has been taken' })
   @ApiResponseWrapper(Affiliation)
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtRolesGuard)
+  @Roles(RoleEnum.ADMIN)
   @Patch('/:id')
   async update(
     @Param('id')

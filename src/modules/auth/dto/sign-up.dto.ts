@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { Gender } from 'src/models/enums/gender.enum';
+import { RoleEnum } from 'src/models/enums/role.enum';
 
 export class SignUpDto {
   @ApiProperty({
@@ -58,15 +66,6 @@ export class SignUpDto {
   studentId: string;
 
   @ApiProperty({
-    description: 'School year',
-    example: '2024',
-    name: 'school_year',
-  })
-  @IsOptional()
-  @IsString()
-  schoolYear?: string;
-
-  @ApiProperty({
     description: 'Gender of the user',
     enum: Gender,
     example: Gender.MALE,
@@ -75,4 +74,12 @@ export class SignUpDto {
   @IsOptional()
   @IsEnum(Gender)
   gender?: Gender;
+
+  @ApiProperty({
+    description: 'Contestant affiliation ID',
+    name: 'affiliation_id',
+  })
+  @IsUUID()
+  @IsNotEmpty()
+  affiliationId: string;
 }

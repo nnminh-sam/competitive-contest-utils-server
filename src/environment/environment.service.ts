@@ -64,4 +64,12 @@ export class EnvironmentService {
   get FeHost(): string {
     return this.configService.get<string>('FE_HOST');
   }
+
+  get adminEmail(): string {
+    return this.configService.get<string>('ADMIN_EMAIL');
+  }
+
+  get adminPassword(): string {
+    return this.configService.get<string>('ADMIN_PASSWORD');
+  }
 }

@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
   Min,
 } from 'class-validator';
 import { Gender } from 'src/models/enums/gender.enum';
@@ -36,11 +37,11 @@ export class CreateContestantDto {
   @IsNotEmpty()
   studentId: string;
 
-  @IsString()
-  @IsOptional()
-  schoolYear?: string;
-
   @IsEnum(Gender)
   @IsOptional()
   gender?: Gender;
+
+  @IsUUID()
+  @IsNotEmpty()
+  affiliationId: string;
 }

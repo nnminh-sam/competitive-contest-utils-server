@@ -19,7 +19,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const message: string = isArray(details) ? details[0] : details;
 
     response.status(status).json({
-      statusCode: status,
+      status_code: status,
+      status: exceptionResponse.error,
       message,
       ...(isArray(details) &&
         details.length > 1 && {

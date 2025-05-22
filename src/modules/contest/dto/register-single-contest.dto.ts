@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class RegisterSingleContestDto {
   @ApiProperty({
-    description: 'Unique identifier of the registrating contestant',
+    description: 'Unique identifier of the participating contest',
     type: 'string',
-    name: 'contestant_id',
+    name: 'contest_id',
   })
-  @IsString()
   @IsNotEmpty()
-  contestantId: string;
+  @IsUUID()
+  contestId: string;
 }

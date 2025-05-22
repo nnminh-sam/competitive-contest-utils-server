@@ -1,5 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
-import { JwtClaimDto } from './dto/jwt-claim.dto';
+import { v4 as uuid } from 'uuid';
+import { AuthPayload } from './dto/jwt-claim.dto';
 import {
   BadGatewayException,
   BadRequestException,
@@ -17,6 +18,7 @@ import { SignInDto } from 'src/modules/auth/dto/sign-in.dto';
 import { ChangePasswordDto } from 'src/modules/auth/dto/change-password.dto';
 import { ChangePasswordResponseDto } from 'src/modules/auth/dto/change-password-response.dto';
 import { MailingService } from 'src/modules/mailing/mailing.service';
+import { RoleEnum } from 'src/models/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -29,39 +31,48 @@ export class AuthService {
     private readonly mailingService: MailingService,
   ) {}
 
-  private isTokenExpired(exp: number) {
+  private checkTokenExpiration(exp: number) {
     const currentTime: number = Math.floor(Date.now() / 1000);
     return currentTime > exp;
   }
 
-  generateTokens(jwtClaimDto: JwtClaimDto) {
+  generateTokens(email: string, sub: string, role: RoleEnum) {
     return {
-      accessToken: this.jwtService.sign({ ...jwtClaimDto, expiresIn: '1h' }),
-      refreshToken: this.jwtService.sign({ ...jwtClaimDto, expiresIn: '1d' }),
+      accessToken: this.jwtService.sign({
+        ...{ email, sub, role, jti: uuid() },
+        expiresIn: '1h',
+      }),
+      refreshToken: this.jwtService.sign({
+        ...{ email, sub, role, jti: uuid() },
+        expiresIn: '1d',
+      }),
     };
   }
 
-  extractClaim(token: string) {
-    return this.jwtService.decode(token) as JwtClaimDto;
+  decodeToken(token: string): AuthPayload {
+    return this.jwtService.decode(token);
   }
 
   validateToken(token: string) {
-    const jwtClaimDto: JwtClaimDto = this.extractClaim(token);
-    if (!jwtClaimDto?.exp) throw new BadRequestException('Invalid token');
+    const payload: AuthPayload = this.decodeToken(token);
 
-    const tokenExpired = this.isTokenExpired(jwtClaimDto.exp);
-    if (tokenExpired) throw new BadRequestException('Invalid token');
+    const isTokenExpired = this.checkTokenExpiration(payload.exp);
+    if (isTokenExpired) {
+      throw new BadRequestException('Invalid token');
+    }
 
-    return jwtClaimDto;
+    return payload;
   }
 
   async signUp(signUpDto: SignUpDto) {
-    const contestant: Contestant =
-      await this.contestantService.create(signUpDto);
-    const { accessToken, refreshToken } = this.generateTokens({
-      email: contestant.email,
-      sub: contestant.id,
-    });
+    const result: Contestant = await this.contestantService.create(signUpDto);
+    const contestant = { ...result };
+    delete contestant.password;
+    const { accessToken, refreshToken } = this.generateTokens(
+      contestant.email,
+      contestant.id,
+      contestant.role,
+    );
     return {
       contestant,
       jwt: accessToken,
@@ -71,11 +82,12 @@ export class AuthService {
 
   async signIn({ email, password }: SignInDto) {
     const contestant: Contestant =
-      await this.contestantService.findOneByCredentials(email, password);
-    const { accessToken, refreshToken } = this.generateTokens({
-      email: contestant.email,
-      sub: contestant.id,
-    });
+      await this.contestantService.validateCredentials(email, password);
+    const { accessToken, refreshToken } = this.generateTokens(
+      contestant.email,
+      contestant.id,
+      contestant.role,
+    );
     return {
       contestant,
       jwt: accessToken,
@@ -134,7 +146,7 @@ export class AuthService {
   }
 
   async resetPassword(token: string, newPassword: string) {
-    const claim: JwtClaimDto = this.validateToken(token);
+    const claim: AuthPayload = this.validateToken(token);
     const tokenBlackListed = await this.redisService.isTokenBlacklisted(token);
     if (tokenBlackListed) throw new BadGatewayException('Invalid token');
 

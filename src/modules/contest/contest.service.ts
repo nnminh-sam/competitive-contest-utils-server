@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { Contest } from 'src/models/contest.model';
@@ -8,8 +14,8 @@ import { FindContestDto } from 'src/modules/contest/dto/find-contest.dto';
 import { Contestant } from 'src/models/contestant.model';
 import { ContestantService } from 'src/modules/contestant/contestant.service';
 import { TeamService } from 'src/modules/team/team.service';
-import { Team } from 'src/models/team.model';
 import { ContestType } from 'src/models/enums/contest-type.enum';
+import { ContestParticipation } from 'src/models/contest-participation.model';
 
 @Injectable()
 export class ContestService {
@@ -18,39 +24,71 @@ export class ContestService {
   constructor(
     @InjectRepository(Contest)
     private readonly contestRepository: Repository<Contest>,
+    @InjectRepository(ContestParticipation)
+    private readonly contestParticipationRepository: Repository<ContestParticipation>,
     private readonly contestantService: ContestantService,
     private readonly teamService: TeamService,
   ) {}
 
+  /**
+   * Check if a contestant is participated in a a contest or not.
+   * @param contestant
+   * @param contest
+   * @returns true if contestant is participated, otherwise returns false
+   */
+  private checkParticipatedContest(contestant: Contestant, contest: Contest) {
+    const participations: ContestParticipation[] = contestant?.participations;
+    console.log(
+      '🚀 ~ ContestService ~ checkParticipatedContest ~ participations:',
+      participations,
+    );
+
+    if (!participations) {
+      return false;
+    }
+    const result = participations.findIndex((p) => p.contestId === contest.id);
+    return result !== -1;
+  }
+
   async checkUniqueContestName(name: string) {
-    if (!name) throw new BadRequestException('Contest name is required');
+    if (!name) {
+      throw new BadRequestException('Contest name is required');
+    }
+
     const isNameTaken = await this.contestRepository.existsBy({ name });
-    if (isNameTaken) throw new BadRequestException('Name is taken');
+    if (isNameTaken) {
+      throw new BadRequestException('Contest name has been taken');
+    }
   }
 
   async findOne(id: string) {
-    if (!id) return null;
-    return await this.contestRepository.findOne({
+    if (!id) {
+      return null;
+    }
+
+    const contest = await this.contestRepository.findOne({
       where: { id },
-      relations: ['participants', 'teamParticipants'],
+      relations: ['participants'],
     });
+    if (!contest) {
+      throw new NotFoundException('Contest not found');
+    }
+
+    return contest;
   }
 
   async find(findContestDto: FindContestDto) {
-    const { page, limit, orderBy, sortBy, name, startAt, duration, type } =
-      findContestDto;
+    const { page, limit, orderBy, sortBy, name, ...filters } = findContestDto;
 
     return this.contestRepository.find({
       where: {
-        ...(name ? { name: ILike(`%${name}%`) } : {}),
-        ...(startAt ? { startAt } : {}),
-        ...(duration ? { duration } : {}),
-        ...(type ? { type } : {}),
+        ...(name && { name: ILike(`%${name}%`) }),
+        ...(filters && { ...filters }),
       },
       skip: (page - 1) * limit,
       take: limit,
-      order: orderBy ? { [orderBy]: sortBy } : undefined,
-      relations: ['participants', 'teamParticipants'],
+      order: { ...(orderBy && { [orderBy]: sortBy }) },
+      relations: ['participants'],
     });
   }
 
@@ -58,75 +96,87 @@ export class ContestService {
     await this.checkUniqueContestName(createContestDto.name);
 
     try {
-      const contestEntity = this.contestRepository.create(createContestDto);
-      return await this.contestRepository.save(contestEntity);
+      const entity: Contest = this.contestRepository.create(createContestDto);
+      return await this.contestRepository.save(entity);
     } catch (error: any) {
-      this.logger.error(error.message);
-      throw new BadRequestException('Cannot create contest');
+      this.logger.fatal(error.message);
+      throw new InternalServerErrorException('Cannot create contest');
     }
   }
 
-  async registerSingleContestant(contestId: string, contestantId: string) {
-    if (!contestId || !contestantId)
-      throw new BadRequestException('Invalid contest id or contestant id');
-
-    const contest = await this.findOne(contestId);
-    if (!contest) throw new BadRequestException('Contest not found');
-    if (contest.type !== ContestType.SINGLE)
-      throw new BadRequestException(
-        'Invalid contest type! Contest must be type Single',
-      );
+  async registerContestant(contestId: string, contestantId: string) {
+    const contest: Contest = await this.findOne(contestId);
+    console.log('🚀 ~ ContestService ~ registerContestant ~ contest:', contest);
 
     const contestant: Contestant =
       await this.contestantService.findOne(contestantId);
-    if (!contestant) throw new BadRequestException('Contestant not found');
-    if (
-      contest.participants.some(
-        (participant) => participant.id === contestantId,
-      )
-    )
-      throw new BadRequestException('Contestant is already participated');
+    console.log(
+      '🚀 ~ ContestService ~ registerContestant ~ contestant:',
+      contestant,
+    );
 
-    contest.participants.push(contestant);
-    return await this.contestRepository.save(contest);
-  }
-
-  async registerTeamContestant(contestId: string, teamId: string) {
-    if (!contestId || !teamId)
-      throw new BadRequestException('Invalid contest id or team id');
-
-    const contest = await this.findOne(contestId);
-    if (!contest) throw new BadRequestException('Contest not found');
-    if (contest.type !== ContestType.TEAM)
+    const isContestParticipated = this.checkParticipatedContest(
+      contestant,
+      contest,
+    );
+    if (isContestParticipated) {
       throw new BadRequestException(
-        'Invalid contest type! Contest must be type Team',
+        'Contestant is already participated in the contest',
       );
+    }
 
-    const team: Team = await this.teamService.findOne(teamId);
-    if (!team) throw new BadRequestException('Team not found');
-    if (contest.teamParticipants.some((team) => team.id === teamId))
-      throw new BadRequestException('Team is already participated');
+    const participants: Contestant[] = [contestant];
+    if (contest.type === ContestType.TEAM) {
+      if (!contestant?.team) {
+        throw new BadRequestException(
+          'Contest must joined a team to be able to participate in the contest',
+        );
+      }
+      contestant.team.members.forEach((member: Contestant) => {
+        if (member.id !== contestant.id) participants.push(member);
+      });
+    }
 
-    contest.teamParticipants.push(team);
-    return await this.contestRepository.save(contest);
+    await Promise.all([
+      participants.forEach(async (participant: Contestant) => {
+        const payload = {
+          contestId: contest.id,
+          contestantId: participant.id,
+        };
+        const entity: ContestParticipation =
+          this.contestParticipationRepository.create(payload);
+        try {
+          await this.contestParticipationRepository.save(entity);
+        } catch (error: any) {
+          this.logger.fatal(error.message);
+          throw new InternalServerErrorException(
+            'Cannot save contest participation',
+          );
+        }
+      }),
+    ]);
+
+    return 'Success';
   }
 
   async update(id: string, updateContestDto: UpdateContestDto) {
-    if (!id) throw new BadRequestException('Invalid contest id');
+    if (!id) {
+      throw new BadRequestException('Contest ID is required');
+    }
+
     await this.checkUniqueContestName(updateContestDto?.name);
 
     const contest = await this.contestRepository.findOneBy({ id });
-    if (!contest) throw new BadRequestException('Contest not found');
 
     try {
-      const mergedEntity = this.contestRepository.merge(
+      const entity: Contest = this.contestRepository.merge(
         contest,
         updateContestDto,
       );
-      return await this.contestRepository.save(mergedEntity);
+      return await this.contestRepository.save(entity);
     } catch (error: any) {
-      this.logger.error(error.message);
-      throw new BadRequestException('Cannot update contest');
+      this.logger.fatal(error.message);
+      throw new InternalServerErrorException('Cannot update contest');
     }
   }
 }

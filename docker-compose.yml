@@ -9,16 +9,16 @@ services:
     ports:
       - '${POSTGRES_PORT}:5432'
     volumes:
-      - ~/docker-volumes/contest-system-db:/var/lib/postgresql/data
+      - ./docker-volumes/contest-system-db:/var/lib/postgresql/data
     restart: always
 
   redis:
     container_name: contest-system-redis-db
     image: redis:8.0-M02-alpine
     ports:
-      - '6379:6379'
+      - '${REDIS_BLACKLIST_PORT}:6379'
     volumes:
-      - redis-data:/data
+      - ./docker-volumes/redis-db:/data
 
 volumes:
   redis-data:

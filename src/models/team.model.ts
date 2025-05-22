@@ -1,11 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Contest } from 'src/models/contest.model';
 import { Contestant } from 'src/models/contestant.model';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -38,14 +36,6 @@ export class Team {
     cascade: true,
   })
   members: Contestant[];
-
-  @ApiProperty({
-    description: 'Participated contests',
-    type: () => Contest,
-    isArray: true,
-  })
-  @ManyToMany(() => Contest, (contest) => contest.teamParticipants)
-  contests: Contest[];
 
   @ApiProperty({
     description: 'Create team timestamp',

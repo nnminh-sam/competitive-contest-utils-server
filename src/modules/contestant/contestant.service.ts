@@ -14,6 +14,7 @@ import { FindContestantDto } from 'src/modules/contestant/dto/find-contestant.dt
 import { SignUpDto } from 'src/modules/auth/dto/sign-up.dto';
 import { Team } from 'src/models/team.model';
 import { Contest } from 'src/models/contest.model';
+import { AffiliationService } from 'src/modules/affiliation/affiliation.service';
 
 @Injectable()
 export class ContestantService {
@@ -22,24 +23,45 @@ export class ContestantService {
   constructor(
     @InjectRepository(Contestant)
     private readonly contestantRepository: Repository<Contestant>,
+    private readonly affiliationService: AffiliationService,
   ) {}
 
-  async findOneByCredentials(email: string, password: string) {
-    const contestant: Contestant = await this.contestantRepository
-      .createQueryBuilder('contestants')
-      .where('contestants.email = :email', { email })
-      .addSelect('contestants.password')
-      .getOne();
-    if (!contestant) throw new BadRequestException('Contestant not found');
+  async validateCredentials(
+    email: string,
+    password: string,
+  ): Promise<Contestant> {
+    const contestant: Contestant = await this.contestantRepository.findOne({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        password: true,
+        firstName: true,
+        lastName: true,
+        studentId: true,
+        gender: true,
+        availability: true,
+        createdAt: true,
+        updatedAt: true,
+        role: true,
+      },
+      relations: ['affiliation'],
+    });
+    if (!contestant) {
+      throw new NotFoundException('Contestant not found');
+    }
 
-    const matchedPassword: boolean = bcrypt.compareSync(
+    const isPasswordMatch: boolean = bcrypt.compareSync(
       password,
       contestant.password,
     );
-    if (!matchedPassword) throw new BadRequestException('Invalid password');
+    if (!isPasswordMatch) {
+      throw new BadRequestException('Invalid password');
+    }
 
-    delete contestant.password;
-    return contestant;
+    const result: Contestant = { ...contestant, password: '' };
+    return result;
   }
 
   async findOneBy(findContestantDto: FindContestantDto) {
@@ -49,69 +71,74 @@ export class ContestantService {
   }
 
   async findOne(id: string) {
-    if (!id) return null;
+    if (!id) {
+      throw new BadRequestException('Contestant ID is required');
+    }
 
-    return await this.contestantRepository.findOne({
+    const contestant: Contestant = await this.contestantRepository.findOne({
       where: { id, availability: true },
+      relations: ['team', 'affiliation', 'participations'],
     });
+    if (!contestant) {
+      throw new NotFoundException('Contestant not found');
+    }
+
+    return contestant;
   }
 
-  async findJoinedTeam(id: string) {
-    if (!id) throw new BadRequestException('Invalid contestant id');
+  async findTeamByContestantId(id: string) {
+    if (!id) {
+      throw new BadRequestException('Contestant ID is required');
+    }
+
     const contestant: Contestant = await this.contestantRepository.findOne({
       where: { id },
       relations: ['team', 'team.members'],
     });
-    return contestant?.team;
-  }
-
-  async findParticipatedContests(id: string) {
-    if (!id) throw new BadRequestException('Invalid contestant id');
-    const contestant: Contestant = await this.contestantRepository.findOne({
-      where: { id },
-      relations: ['contests'],
-    });
-    return contestant?.contests;
-  }
-
-  async findAllParticipatedContests(id: string) {
-    if (!id) throw new BadRequestException('Invalid contestant id');
-    const contestant: Contestant = await this.contestantRepository.findOne({
-      where: { id },
-      relations: ['contests', 'team', 'team.contests'],
-    });
-    const result: Contest[] = [];
-    contestant?.contests.forEach((contest) => {
-      result.push(contest);
-    });
-    const team: Team = contestant?.team;
-    if (team) {
-      team?.contests.forEach((contest) => {
-        result.push(contest);
-      });
+    if (!contestant) {
+      throw new NotFoundException('Contestant not found');
     }
-    return result;
+
+    if (!contestant.team) {
+      throw new NotFoundException('Contestant does not have team');
+    }
+
+    return contestant;
   }
 
   async create(signUpDto: SignUpDto) {
     const isEmailTaken: boolean = await this.contestantRepository.existsBy({
       email: signUpDto.email,
     });
-    if (isEmailTaken) throw new BadRequestException('Email is taken');
+    if (isEmailTaken) {
+      throw new BadRequestException('Email is taken');
+    }
 
     const isUsernameTaken: boolean = await this.contestantRepository.existsBy({
       username: signUpDto.username,
     });
-    if (isUsernameTaken) throw new BadRequestException('Username is taken');
+    if (isUsernameTaken) {
+      throw new BadRequestException('Username is taken');
+    }
 
     const isStudentIdTaken: boolean = await this.contestantRepository.existsBy({
       studentId: signUpDto.studentId,
     });
-    if (isStudentIdTaken) throw new BadRequestException('Student id is taken');
+    if (isStudentIdTaken) {
+      throw new BadRequestException('Student id is taken');
+    }
+
+    const affiliation = await this.affiliationService.findById(
+      signUpDto.affiliationId,
+    );
+    if (!affiliation) {
+      throw new BadRequestException('Affiliation not found');
+    }
 
     try {
       const contestantEntity: Contestant = this.contestantRepository.create({
         ...signUpDto,
+        affiliation,
         password: await bcrypt.hash(signUpDto.password, 10),
       });
       return await this.contestantRepository.save(contestantEntity);

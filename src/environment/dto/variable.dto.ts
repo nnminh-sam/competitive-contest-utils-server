@@ -47,6 +47,12 @@ export class EnvironmentVariablesDto {
 
   @IsString()
   FE_HOST: string;
+
+  @IsString()
+  ADMIN_EMAIL: string;
+
+  @IsString()
+  ADMIN_PASSWORD: string;
 }
 
 export function validate(

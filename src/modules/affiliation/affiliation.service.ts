@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Affiliation } from 'src/models/affiliation.model';
 import { CreateAffiliationDto } from 'src/modules/affiliation/dto/create-affiliation.dto';
 import { UpdateAffiliationDto } from 'src/modules/affiliation/dto/update-affiliation.dto';
-import { ILike, Repository } from 'typeorm';
+import { ILike, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class AffiliationService {
@@ -17,15 +17,30 @@ export class AffiliationService {
 
   async find({ page, limit, orderBy, sortBy, name }: FindAffiliationDto) {
     const skip: number = (page - 1) * limit;
-    return await this.affiliationRepository.find({
-      where: {
-        ...(name && {
-          name: ILike(name),
-        }),
-      },
-      skip,
-      take: limit,
-      order: { [orderBy]: sortBy },
+    const queryBuilder = this.affiliationRepository
+      .createQueryBuilder('affiliation')
+      .where('affiliation.name != :adminName', { adminName: 'admin' });
+
+    if (name) {
+      queryBuilder.andWhere('affiliation.name ILIKE :name', {
+        name: `%${name}%`,
+      });
+    }
+
+    return await queryBuilder
+      .skip(skip)
+      .take(limit)
+      .orderBy(`affiliation.${orderBy}`, sortBy.toUpperCase() as 'ASC' | 'DESC')
+      .getMany();
+  }
+
+  async existedById(id: string) {
+    return await this.affiliationRepository.existsBy({ id });
+  }
+
+  async findById(id: string) {
+    return await this.affiliationRepository.findOne({
+      where: { id },
     });
   }
 

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ContestParticipation } from 'src/models/contest-participation.model';
 import { Contestant } from 'src/models/contestant.model';
 import { ContestType } from 'src/models/enums/contest-type.enum';
 import { Team } from 'src/models/team.model';
@@ -8,6 +9,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,23 +17,22 @@ import {
 @Entity()
 export class Contest {
   @ApiProperty({
-    description: 'Contest unique identifier',
+    description: 'Contest ID',
     type: 'string',
     required: true,
-    readOnly: true,
   })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty({
-    description: "Contest's name",
+    description: 'Contest name',
     type: 'string',
   })
   @Column({ unique: true, nullable: false })
   name: string;
 
   @ApiProperty({
-    description: "Contest's formal name",
+    description: 'Contest formal name',
     type: 'string',
     name: 'formal_name',
     required: false,
@@ -40,7 +41,7 @@ export class Contest {
   formalName: string;
 
   @ApiProperty({
-    description: "Contest's description",
+    description: 'Contest description',
     type: 'string',
     required: false,
   })
@@ -48,14 +49,14 @@ export class Contest {
   description: string;
 
   @ApiProperty({
-    description: "Contest's banner URL",
+    description: 'Contest banner URL',
     type: 'string',
   })
   @Column({ nullable: false })
   banner: string;
 
   @ApiProperty({
-    description: "Contest's begin timestamp",
+    description: 'Contest begin timestamp',
     type: 'string',
     name: 'start_at',
   })
@@ -63,7 +64,7 @@ export class Contest {
   startAt: Date;
 
   @ApiProperty({
-    description: "Contest's duration in minutes",
+    description: 'Contest duration in minutes',
     type: 'number',
     name: 'duration',
   })
@@ -71,7 +72,7 @@ export class Contest {
   duration: number;
 
   @ApiProperty({
-    description: "Contest's type",
+    description: 'Contest type',
     type: 'string',
     default: ContestType.SINGLE,
   })
@@ -79,24 +80,14 @@ export class Contest {
   type: ContestType;
 
   @ApiProperty({
-    description: 'Contest participants (for Single type contest)',
+    description: 'Contest participants',
     type: 'array',
-    readOnly: true,
   })
-  @ManyToMany(() => Contestant, (contestant) => contestant.contests, {
-    nullable: true,
-  })
-  @JoinTable()
-  participants?: Contestant[];
-
-  @ApiProperty({
-    description: 'Contest participated teams (for Team type contest)',
-    type: 'array',
-    readOnly: true,
-  })
-  @ManyToMany(() => Team, (team) => team.contests, { nullable: true })
-  @JoinTable()
-  teamParticipants?: Team[];
+  @OneToMany(
+    () => ContestParticipation,
+    (contestParticipation) => contestParticipation.contest,
+  )
+  participants?: ContestParticipation[];
 
   @ApiProperty({
     description: 'Create contest timestamp',

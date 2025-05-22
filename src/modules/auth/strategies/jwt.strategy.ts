@@ -1,20 +1,12 @@
-import { Contestant } from 'src/models/contestant.model';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ContestantService } from 'src/modules/contestant/contestant.service';
 import { EnvironmentService } from 'src/environment/environment.service';
 import { Injectable } from '@nestjs/common';
-import { AuthService } from 'src/modules/auth/auth.service';
-import { JwtClaimDto } from 'src/modules/auth/dto/jwt-claim.dto';
-import { AuthResponseDto } from 'src/modules/auth/dto/auth-response.dto';
+import { AuthPayload } from 'src/modules/auth/dto/jwt-claim.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly contestantService: ContestantService,
-    private readonly environmentService: EnvironmentService,
-  ) {
+  constructor(private readonly environmentService: EnvironmentService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -22,7 +14,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtClaimDto) {
-    return await this.contestantService.findOne(payload.sub);
+  async validate(payload: AuthPayload) {
+    console.log('🚀 ~ JwtStrategy ~ validate ~ payload:', payload);
+    return payload;
   }
 }
