@@ -183,10 +183,14 @@ export class ContestantService {
     }
 
     const payload = {
-      ...updateContestantDto,
+      email: updateContestantDto.email,
+      username: updateContestantDto.username,
+      studentId: updateContestantDto.studentId,
+      firstName: updateContestantDto.firstName,
+      lastName: updateContestantDto.lastName,
+      gender: updateContestantDto.gender,
       affiliation,
     };
-    delete payload.affiliationId;
 
     try {
       const res = await this.contestantRepository.update(
