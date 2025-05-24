@@ -8,12 +8,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Contestant } from 'src/models/contestant.model';
 import { Repository } from 'typeorm';
 import { UpdateContestantDto } from 'src/modules/contestant/dto/update-contestant.dto';
-import { camelCaseToNormal } from 'src/helpers';
 import * as bcrypt from 'bcrypt';
 import { FindContestantDto } from 'src/modules/contestant/dto/find-contestant.dto';
 import { SignUpDto } from 'src/modules/auth/dto/sign-up.dto';
-import { Team } from 'src/models/team.model';
-import { Contest } from 'src/models/contest.model';
 import { AffiliationService } from 'src/modules/affiliation/affiliation.service';
 
 @Injectable()

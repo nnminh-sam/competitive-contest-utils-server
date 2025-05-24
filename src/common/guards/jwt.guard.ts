@@ -9,15 +9,8 @@ export class JwtGuard extends AuthGuard('jwt') {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log(
-      '=================================================Called jwt guard',
-    );
     const request = context.switchToHttp().getRequest<Request>();
     const result = super.canActivate(context);
-    console.log(
-      '🚀 ~ JwtGuard ~ classJwtGuardextendsAuthGuard ~ result:',
-      result,
-    );
 
     if (result instanceof Promise) {
       return result.then((isValid) => {

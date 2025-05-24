@@ -1,4 +1,4 @@
 export enum ContestType {
-  SINGLE = 'Single',
-  TEAM = 'Team',
+  SINGLE = 'SINGLE',
+  TEAM = 'TEAM',
 }

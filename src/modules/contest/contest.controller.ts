@@ -7,6 +7,7 @@ import {
   Post,
   Query,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -98,7 +99,7 @@ export class ContestController {
     @Param('id') id: string,
     @RequestedUser() claims: AuthPayload,
   ) {
-    return this.contestService.registerContestant(id, claims.sub);
+    return this.contestService.participateContest(id, claims.sub);
   }
 
   @ApiBearerAuth()
@@ -114,5 +115,25 @@ export class ContestController {
     @Body() updateContestDto: UpdateContestDto,
   ) {
     return await this.contestService.update(id, updateContestDto);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '[Role: Contestant] Contestant resign from a contest',
+  })
+  @ApiResponseWrapper(String)
+  @ApiOkResponse({ description: 'Resigned successfully' })
+  @ApiBadRequestResponse({
+    description:
+      'Contest not found, contestant not found or contestant is not participating',
+  })
+  @UseGuards(JwtRolesGuard)
+  @Roles(RoleEnum.CONTESTANT)
+  @Delete('/:id/participations')
+  async resignContest(
+    @Param('id') id: string,
+    @RequestedUser() claims: AuthPayload,
+  ) {
+    return this.contestService.resignContest(id, claims.sub);
   }
 }

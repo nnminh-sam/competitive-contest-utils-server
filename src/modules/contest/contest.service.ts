@@ -112,7 +112,7 @@ export class ContestService {
     }
   }
 
-  async registerContestant(contestId: string, contestantId: string) {
+  async participateContest(contestId: string, contestantId: string) {
     const contest: Contest = await this.findOne(contestId);
 
     const contestant: Contestant =
@@ -135,7 +135,14 @@ export class ContestService {
           'Contest must joined a team to be able to participate in the contest',
         );
       }
-      contestant.team.members.forEach((member: Contestant) => {
+      const team = await this.teamService.findOne(contestant.team.id);
+      if (!team) {
+        throw new BadRequestException(
+          'Contest must joined a team to be able to participate in the contest',
+        );
+      }
+
+      team.members.forEach((member: Contestant) => {
         if (member.id !== contestant.id) participants.push(member);
       });
     }
@@ -180,6 +187,54 @@ export class ContestService {
     } catch (error: any) {
       this.logger.fatal(error.message);
       throw new InternalServerErrorException('Cannot update contest');
+    }
+  }
+
+  async resignContest(contestId: string, contestantId: string) {
+    const contest: Contest = await this.findOne(contestId);
+    const contestant: Contestant =
+      await this.contestantService.findOne(contestantId);
+
+    const isContestParticipated = this.checkParticipatedContest(
+      contestant,
+      contest,
+    );
+    if (!isContestParticipated) {
+      throw new BadRequestException(
+        'Contestant is not participating in this contest',
+      );
+    }
+
+    const participants: Contestant[] = [contestant];
+    if (contest.type === ContestType.TEAM) {
+      if (!contestant?.team) {
+        throw new BadRequestException(
+          'Contestant must be in a team to resign from team contest',
+        );
+      }
+      const team = await this.teamService.findOne(contestant.team.id);
+      if (!team) {
+        throw new BadRequestException('Team not found');
+      }
+
+      team.members.forEach((member: Contestant) => {
+        if (member.id !== contestant.id) participants.push(member);
+      });
+    }
+
+    try {
+      await Promise.all(
+        participants.map(async (participant: Contestant) => {
+          await this.contestParticipationRepository.delete({
+            contestId: contest.id,
+            contestantId: participant.id,
+          });
+        }),
+      );
+      return 'Success';
+    } catch (error: any) {
+      this.logger.fatal(error.message);
+      throw new InternalServerErrorException('Cannot resign from contest');
     }
   }
 }
