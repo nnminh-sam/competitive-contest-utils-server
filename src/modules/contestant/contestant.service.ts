@@ -175,10 +175,23 @@ export class ContestantService {
     )
       throw new BadRequestException('Username is taken');
 
+    const affiliation = await this.affiliationService.findById(
+      updateContestantDto.affiliationId,
+    );
+    if (!affiliation) {
+      throw new BadRequestException('Affiliation not found');
+    }
+
+    const payload = {
+      ...updateContestantDto,
+      affiliation,
+    };
+    delete payload.affiliationId;
+
     try {
       const res = await this.contestantRepository.update(
         { id, availability: true },
-        { ...updateContestantDto },
+        payload,
       );
       if (!res?.affected) throw new NotFoundException('Contestant not found');
 

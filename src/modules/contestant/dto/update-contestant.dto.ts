@@ -42,12 +42,12 @@ export class UpdateContestantDto {
   studentId?: string;
 
   @ApiPropertyOptional({
-    description: 'School year of the contestant',
-    name: 'school_year',
+    description: 'Affiliation ID of the contestant',
+    name: 'affiliation_id',
   })
   @IsOptional()
   @IsString()
-  schoolYear?: string;
+  affiliationId?: string;
 
   @ApiPropertyOptional({
     description: 'Gender of the contestant',

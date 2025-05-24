@@ -36,8 +36,8 @@ export class ContestantController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtGuard)
   @Get('me')
-  async findMe(@RequestedUser() contestant: AuthPayload) {
-    return await this.contestantService.findOne(contestant.sub);
+  async findMe(@RequestedUser() payload: AuthPayload) {
+    return await this.contestantService.findOne(payload.sub);
   }
 
   @ApiOperation({ summary: '[Role: All] Update contestant profile' })
@@ -47,11 +47,14 @@ export class ContestantController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @UseGuards(JwtGuard)
-  @Patch(':id')
+  @Patch()
   async update(
-    @Param('id') id: string,
+    @RequestedUser() payload: AuthPayload,
     @Body() updateContestantDto: UpdateContestantDto,
   ) {
-    return await this.contestantService.update(id, updateContestantDto);
+    return await this.contestantService.update(
+      payload.sub,
+      updateContestantDto,
+    );
   }
 }
