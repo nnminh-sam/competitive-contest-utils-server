@@ -126,7 +126,7 @@ export class ContestantService {
     }
 
     const affiliation = await this.affiliationService.findById(
-      signUpDto.affiliationId,
+      '6e5f27b9-35f0-4362-85e8-dae768838c69',
     );
     if (!affiliation) {
       throw new BadRequestException('Affiliation not found');
@@ -146,6 +146,10 @@ export class ContestantService {
   }
 
   async update(id: string, updateContestantDto: UpdateContestantDto) {
+    console.log(
+      '🚀 ~ ContestantService ~ update ~ updateContestantDto:',
+      updateContestantDto,
+    );
     const isStudentIdTaken = await this.contestantRepository.findOneBy({
       studentId: updateContestantDto.studentId,
     });

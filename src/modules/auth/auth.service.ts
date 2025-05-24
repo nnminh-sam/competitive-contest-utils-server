@@ -54,6 +54,7 @@ export class AuthService {
   }
 
   validateToken(token: string) {
+    console.log('🚀 ~ AuthService ~ validateToken ~ token:', token);
     const payload: AuthPayload = this.decodeToken(token);
 
     const isTokenExpired = this.checkTokenExpiration(payload.exp);
@@ -65,6 +66,7 @@ export class AuthService {
   }
 
   async signUp(signUpDto: SignUpDto) {
+    console.log('🚀 ~ AuthService ~ signUp ~ signUpDto:', signUpDto);
     const result: Contestant = await this.contestantService.create(signUpDto);
     const contestant = { ...result };
     delete contestant.password;
