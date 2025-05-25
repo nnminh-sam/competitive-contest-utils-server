@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -77,5 +78,18 @@ export class TeamController {
     updateTeamDto: UpdateTeamDto,
   ) {
     return await this.teamService.update(id, updateTeamDto);
+  }
+
+  @ApiOperation({ summary: '[Role: Contestant] Delete team' })
+  @ApiResponseWrapper(String)
+  @ApiOkResponse({ description: 'Team deleted successfully' })
+  @ApiBadRequestResponse({
+    description: 'Team not found or cannot delete team',
+  })
+  @UseGuards(JwtRolesGuard)
+  @Roles(RoleEnum.CONTESTANT)
+  @Delete('/:id')
+  async delete(@Param('id') id: string) {
+    return await this.teamService.delete(id);
   }
 }

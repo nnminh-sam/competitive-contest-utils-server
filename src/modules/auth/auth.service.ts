@@ -66,7 +66,6 @@ export class AuthService {
   }
 
   async signUp(signUpDto: SignUpDto) {
-    console.log('🚀 ~ AuthService ~ signUp ~ signUpDto:', signUpDto);
     const result: Contestant = await this.contestantService.create(signUpDto);
     const contestant = { ...result };
     delete contestant.password;

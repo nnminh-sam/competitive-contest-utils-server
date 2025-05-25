@@ -79,7 +79,7 @@ export class SignUpDto {
     description: 'Contestant affiliation ID',
     name: 'affiliation_id',
   })
-  // @IsUUID()
-  // @IsNotEmpty()
+  @IsUUID()
+  @IsNotEmpty()
   affiliationId: string;
 }

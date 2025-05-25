@@ -95,4 +95,32 @@ export class TeamService {
       throw new BadRequestException('Cannot update team');
     }
   }
+
+  async delete(id: string) {
+    const team = await this.teamRepository.findOne({
+      where: { id },
+      relations: ['members'],
+    });
+
+    if (!team) {
+      throw new BadRequestException('Team not found');
+    }
+
+    try {
+      // Remove team reference from all members
+      await Promise.all(
+        team.members.map(async (member) => {
+          member.team = null;
+          await this.contestantService.update(member.id, {});
+        }),
+      );
+
+      // Delete the team
+      await this.teamRepository.remove(team);
+      return 'Success';
+    } catch (error: any) {
+      this.logger.error(error.message);
+      throw new BadRequestException('Cannot delete team');
+    }
+  }
 }

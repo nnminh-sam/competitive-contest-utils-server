@@ -126,7 +126,7 @@ export class ContestantService {
     }
 
     const affiliation = await this.affiliationService.findById(
-      '6e5f27b9-35f0-4362-85e8-dae768838c69',
+      signUpDto.affiliationId,
     );
     if (!affiliation) {
       throw new BadRequestException('Affiliation not found');
@@ -146,35 +146,38 @@ export class ContestantService {
   }
 
   async update(id: string, updateContestantDto: UpdateContestantDto) {
-    console.log(
-      '🚀 ~ ContestantService ~ update ~ updateContestantDto:',
-      updateContestantDto,
-    );
     const isStudentIdTaken = await this.contestantRepository.findOneBy({
       studentId: updateContestantDto.studentId,
     });
     if (
       updateContestantDto?.studentId &&
-      isStudentIdTaken &&
+      isStudentIdTaken?.id &&
       isStudentIdTaken.id !== id
-    )
+    ) {
       throw new BadRequestException('Student id is taken');
+    }
 
     const isEmailTaken = await this.contestantRepository.findOneBy({
       email: updateContestantDto.email,
     });
-    if (updateContestantDto?.email && isEmailTaken && isEmailTaken.id !== id)
+    if (
+      updateContestantDto?.email &&
+      isEmailTaken?.id &&
+      isEmailTaken.id !== id
+    ) {
       throw new BadRequestException('Email is taken');
+    }
 
     const isUsernameTaken = await this.contestantRepository.findOneBy({
       username: updateContestantDto.username,
     });
     if (
       updateContestantDto?.username &&
-      isUsernameTaken &&
+      isUsernameTaken?.id &&
       isUsernameTaken.id !== id
-    )
+    ) {
       throw new BadRequestException('Username is taken');
+    }
 
     const affiliation = await this.affiliationService.findById(
       updateContestantDto.affiliationId,
