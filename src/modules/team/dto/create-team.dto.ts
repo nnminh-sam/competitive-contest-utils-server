@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -23,11 +24,11 @@ export class CreateTeamDto {
   description?: string;
 
   @ApiProperty({
-    description: 'List of team member usernames',
+    description: 'List of team member emails',
     type: [String],
   })
   @IsArray()
   @ArrayNotEmpty()
-  @IsString({ each: true })
+  @IsEmail({}, { each: true, message: 'Invalid email format' })
   members: string[];
 }

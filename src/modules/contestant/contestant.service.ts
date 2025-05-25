@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { FindContestantDto } from 'src/modules/contestant/dto/find-contestant.dto';
 import { SignUpDto } from 'src/modules/auth/dto/sign-up.dto';
 import { AffiliationService } from 'src/modules/affiliation/affiliation.service';
+import { Team } from 'src/models/team.model';
 
 @Injectable()
 export class ContestantService {
@@ -64,6 +65,7 @@ export class ContestantService {
   async findOneBy(findContestantDto: FindContestantDto) {
     return await this.contestantRepository.findOne({
       where: { ...findContestantDto },
+      relations: ['team'],
     });
   }
 
@@ -229,6 +231,20 @@ export class ContestantService {
     } catch (error: any) {
       this.logger.error(error.message);
       throw new BadRequestException('Cannot update password');
+    }
+  }
+
+  async updateTeam(id: string, team: Team | null) {
+    try {
+      const res = await this.contestantRepository.update(
+        { id, availability: true },
+        { team },
+      );
+      if (!res?.affected) throw new NotFoundException('Contestant not found');
+      return await this.findOne(id);
+    } catch (error: any) {
+      this.logger.error(error.message);
+      throw new BadRequestException('Cannot update contestant team');
     }
   }
 }

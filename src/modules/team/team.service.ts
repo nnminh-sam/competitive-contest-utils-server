@@ -34,21 +34,62 @@ export class TeamService {
     if (createTeamDto.members.length !== 3)
       throw new BadRequestException('Invalid team size! Team size must be 3');
 
+    // Check for duplicate emails
+    const uniqueEmails = new Set(createTeamDto.members);
+    if (uniqueEmails.size !== createTeamDto.members.length) {
+      throw new BadRequestException(
+        'Duplicate email addresses are not allowed',
+      );
+    }
+
     const contestants: Contestant[] = await Promise.all(
       createTeamDto.members.map((email: string) => {
         return this.contestantService.findOneBy({ email });
       }),
     );
-    if (contestants.includes(null))
-      throw new BadRequestException('Contestant not found');
+
+    // Check which emails are not found
+    const notFoundEmails = createTeamDto.members.filter(
+      (email, index) => contestants[index] === null,
+    );
+    if (notFoundEmails.length > 0) {
+      throw new BadRequestException(
+        `Contestants not found with emails: ${notFoundEmails.join(', ')}`,
+      );
+    }
+
+    // Check if any contestant is already in a team
+    const contestantsInTeam = contestants.filter(
+      (contestant) => contestant?.team !== null,
+    );
+    if (contestantsInTeam.length > 0) {
+      throw new BadRequestException(
+        `Contestants already in teams: ${contestantsInTeam
+          .map((c) => c.email)
+          .join(', ')}`,
+      );
+    }
 
     try {
+      // Create the team first
       const teamEntity = this.teamRepository.create({
         ...createTeamDto,
         members: contestants,
       });
       const team = await this.teamRepository.save(teamEntity);
-      return team;
+
+      // Update team reference for each contestant
+      await Promise.all(
+        contestants.map(async (contestant) => {
+          await this.contestantService.updateTeam(contestant.id, team);
+        }),
+      );
+
+      // Fetch the team again with updated member references
+      return await this.teamRepository.findOne({
+        where: { id: team.id },
+        relations: ['members'],
+      });
     } catch (error: any) {
       this.logger.error(error.message);
       throw new BadRequestException('Cannot create team');
