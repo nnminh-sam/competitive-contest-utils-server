@@ -133,12 +133,7 @@ export class AuthService {
       </div>
     `;
 
-    await this.mailingService.sendEmail(
-      email,
-      'Reset Password',
-      resetUrl,
-      html,
-    );
+    this.mailingService.sendEmail(email, 'Reset Password', resetUrl, html);
 
     return {
       token,
