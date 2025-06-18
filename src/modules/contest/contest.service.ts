@@ -132,13 +132,13 @@ export class ContestService {
     if (contest.type === ContestType.TEAM) {
       if (!contestant?.team) {
         throw new BadRequestException(
-          'Contest must joined a team to be able to participate in the contest',
+          'Contestant must joined a team to be able to participate in the contest',
         );
       }
       const team = await this.teamService.findOne(contestant.team.id);
       if (!team) {
         throw new BadRequestException(
-          'Contest must joined a team to be able to participate in the contest',
+          'Contestant must joined a team to be able to participate in the contest',
         );
       }
 

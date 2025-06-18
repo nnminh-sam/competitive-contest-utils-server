@@ -1,73 +1,69 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Contest registration system
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+### 1. Bảng `affiliation` (Đơn vị/Trường học)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+| STT | Tên thuộc tính | Ràng buộc               | Kiểu dữ liệu | Ý nghĩa                                   |
+|-----|----------------|-------------------------|--------------|-------------------------------------------|
+| 1   | id             | PK                      | uuid         | Khóa chính, định danh duy nhất cho đơn vị |
+| 2   | name           | NOT NULL, UNIQUE        | varchar      | Tên đơn vị/trường học                     |
+| 3   | createdAt      | NOT NULL, DEFAULT now() | timestamp    | Thời điểm tạo bản ghi                     |
+| 4   | updatedAt      | NOT NULL, DEFAULT now() | timestamp    | Thời điểm cập nhật bản ghi gần nhất       |
 
-## Description
+### 2. Bảng `contest` (Cuộc thi)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+| STT | Tên thuộc tính | Ràng buộc                  | Kiểu dữ liệu | Ý nghĩa                                          |
+|-----|----------------|----------------------------|--------------|--------------------------------------------------|
+| 1   | id             | PK                         | uuid         | Khóa chính, định danh duy nhất cho cuộc thi      |
+| 2   | name           | NOT NULL, UNIQUE           | varchar      | Tên viết tắt của cuộc thi                        |
+| 3   | formalName     | NOT NULL                   | varchar      | Tên đầy đủ chính thức của cuộc thi               |
+| 4   | description    | NOT NULL                   | varchar      | Mô tả chi tiết về cuộc thi                       |
+| 5   | banner         | NOT NULL                   | varchar      | Đường dẫn đến hình ảnh banner của cuộc thi       |
+| 6   | startAt        | NOT NULL                   | timestamp    | Thời điểm bắt đầu cuộc thi                       |
+| 7   | duration       | NOT NULL                   | integer      | Thời lượng cuộc thi (tính bằng phút)             |
+| 8   | type           | NOT NULL, DEFAULT 'SINGLE' | varchar      | Loại cuộc thi (mặc định là SINGLE - thi cá nhân) |
+| 9   | createdAt      | NOT NULL, DEFAULT now()    | timestamp    | Thời điểm tạo bản ghi                            |
+| 10  | updatedAt      | NOT NULL, DEFAULT now()    | timestamp    | Thời điểm cập nhật bản ghi gần nhất              |
 
-## Installation
+### 3. Bảng `contestants` (Thí sinh)
 
-```bash
-$ yarn install
-```
+| STT | Tên thuộc tính | Ràng buộc                 | Kiểu dữ liệu | Ý nghĩa                                     |
+|-----|----------------|---------------------------|--------------|---------------------------------------------|
+| 1   | id             | PK                        | uuid         | Khóa chính, định danh duy nhất cho thí sinh |
+| 2   | email          | NOT NULL, UNIQUE          | varchar      | Email của thí sinh                          |
+| 3   | username       | NOT NULL, UNIQUE          | varchar      | Tên đăng nhập của thí sinh                  |
+| 4   | password       | NOT NULL                  | varchar      | Mật khẩu đã được mã hóa                     |
+| 5   | firstName      | NOT NULL                  | varchar      | Tên của thí sinh                            |
+| 6   | lastName       | NOT NULL                  | varchar      | Họ của thí sinh                             |
+| 7   | studentId      | NOT NULL, UNIQUE          | varchar      | Mã số sinh viên                             |
+| 8   | gender         | NOT NULL, DEFAULT 'Other' | varchar      | Giới tính của thí sinh                      |
+| 9   | availability   | NOT NULL, DEFAULT true    | boolean      | Trạng thái sẵn sàng tham gia                |
+| 10  | teamId         | FK                        | uuid         | Khóa ngoại liên kết đến bảng team           |
+| 11  | affiliationId  | NOT NULL, FK              | uuid         | Khóa ngoại liên kết đến bảng affiliation    |
+| 12  | role           | DEFAULT 0                 | integer      | Vai trò của thí sinh trong hệ thống         |
+| 13  | createdAt      | NOT NULL, DEFAULT now()   | timestamp    | Thời điểm tạo bản ghi                       |
+| 14  | updatedAt      | NOT NULL, DEFAULT now()   | timestamp    | Thời điểm cập nhật bản ghi gần nhất         |
 
-## Running the app
+### 4. Bảng `team` (Đội thi)
 
-```bash
-# development
-$ yarn run start
+| STT | Tên thuộc tính | Ràng buộc               | Kiểu dữ liệu | Ý nghĩa                                    |
+|-----|----------------|-------------------------|--------------|--------------------------------------------|
+| 1   | id             | PK                      | uuid         | Khóa chính, định danh duy nhất cho đội thi |
+| 2   | name           | NOT NULL, UNIQUE        | varchar      | Tên đội thi                                |
+| 3   | description    | NOT NULL                | varchar      | Mô tả về đội thi                           |
+| 4   | createdAt      | NOT NULL, DEFAULT now() | timestamp    | Thời điểm tạo bản ghi                      |
+| 5   | updatedAt      | NOT NULL, DEFAULT now() | timestamp    | Thời điểm cập nhật bản ghi gần nhất        |
 
-# watch mode
-$ yarn run start:dev
+### 5. Bảng `contest_participations` (Tham gia cuộc thi)
 
-# production mode
-$ yarn run start:prod
-```
+| STT | Tên thuộc tính | Ràng buộc               | Kiểu dữ liệu | Ý nghĩa                                                |
+|-----|----------------|-------------------------|--------------|--------------------------------------------------------|
+| 1   | contestId      | PK, FK                  | uuid         | Khóa chính và khóa ngoại liên kết đến bảng contest     |
+| 2   | contestantId   | PK, FK                  | uuid         | Khóa chính và khóa ngoại liên kết đến bảng contestants |
+| 3   | createdAt      | NOT NULL, DEFAULT now() | timestamp    | Thời điểm đăng ký tham gia cuộc thi                    |
 
-## Test
-
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+Lưu ý:
+- PK: Primary Key (Khóa chính)
+- FK: Foreign Key (Khóa ngoại)
+- Các ràng buộc ON DELETE và ON UPDATE được định nghĩa trong các khóa ngoại:
+  - `contest_participations`: ON DELETE CASCADE (xóa bản ghi khi bảng cha bị xóa)
+  - `contestants`: ON DELETE SET NULL cho teamId (set null khi team bị xóa) và ON DELETE NO ACTION cho affiliationId (không cho phép xóa nếu còn thí sinh)
