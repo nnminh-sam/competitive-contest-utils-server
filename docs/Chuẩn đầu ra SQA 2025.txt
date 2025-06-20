@@ -1,0 +1,69 @@
+Chuẩn đầu ra
+-----------------------------------------------------------------------------------------
+Của chuyên ngành công nghệ phần mềm:
+LO11(kiến thức): Thu thập và phân tích yêu cầu chi tiết của người dùng
+LO12(kiến thức): Thiết kế và cài đặt hệ thống phần mềm đáp ứng yêu cầu thực tế
+LO13(kiến thức): Lập kế hoạch và ước lượng dự án phần mềm
+LO14(kiến thức): Lên kế hoạch kiểm thử và chạy kiểm thử, đảm bảo chất lượng phần mềm cũng như quản lý tài liệu dự án phần mềm
+LO15(kiến thức): Áp dụng sáng tạo các tri thức học được vào việc giải quyết các bài toán trong lĩnh vực phát triển phần mềm
+-----------------------------------------------------------------------------------------
+Đóng góp của môn ĐBCLPM cho chương trình đào tạo:
+LO15(kiến thức): Áp dụng sáng tạo các tri thức học được vào giải quyết các bài toán trong lĩnh vực phát triển phần mềm. Cần có kỹ năng PO4,PO7.
+LO17(kỹ năng mềm): Hoạt động, tương tác tốt trong môi trường làm việc đa ngành; có khả năng hòa nhập trong môi trường làm việc quốc tế. Cần có kỹ năng PO4,PO5,PO7,P08.
+PO4(khả năng): làm việc chuyên nghiệp trong ít nhất một trong các lĩnh vực sau: thiết kế phần mềm, phát triển phần mềm, kiểm thử phần mềm
+PO5(khả năng): Làm việc hiệu quả, độc lập cũng như tập thể, trong nhiều môi trường làm việc khác nhau.
+PO7(thái độ): Hiểu biết về các giá trị đạo đức nghề nghiệp
+PO8(thái độ): Ý thức về những vấn đề đương đại, hiểu rõ vai trò của các giải pháp kỹ thuật trong bối cảnh kinh tế, môi trường, xã hội toàn cầu và trong bối cảnh riêng của đất nước.
+-----------------------------------------------------------------------------------------
+Thang đánh giá chuẩn đầu ra của môn học (CLO: course leerning outcome)
+(Đây là các quy định của chuẩn cho cách chấm báo cáo project !)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ CLO1: Áp dụng các hoạt động của đảm bảo chất lượng phần mềm trong quá trình phát
++ triển phần mềm một cách phù hợp. (Đây là kiến thức của môn học)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*** Tiêu chí 1: Áp dụng kĩ thuật rà soát (review tài liệu)
+	+Fail - Below Expectation (từ 0 - 40%): Xây dựng được < 40% tiêu chí đúng. Kết quả rà soát không chính xác, đúng < 40%
+	+Beginning - Needs Improvement(từ 40%-50%): Xây dựng được 40%-50% tiêu chí đúng. Kết quả rà soát đúng 40%-50%
+	+Developing - Marginally adequate (từ 60%-70%): Xây dựng được 60%-70% tiêu chí đúng. Kết quả rà soát đúng 60%-70%
+	+Sufficient - Meet expectation (từ 80%-90%): Xây dựng được 80%-90% tiêu chí đúng. Kết quả rà soát đúng 80%-90%
+	+Exemplary - Exceeds expectations (từ 90%-100%): Xây dựng được >90% tiêu chí đúng. Kết quả rà soát đúng >90%
+
+*** Tiêu chí 2: Áp dụng các kĩ thuật kiểm thử (blackbox, whitebox,..)
+	+Fail - Below Expectation (từ 0 - 40%): Viết được test case, test script nhưng chưa chính xác, số test case chính xác <40%. Kết quả test không chính xác, đúng <40%
+	+Beginning - Needs Improvement(từ 40%-50%):	Viết được test case, test script nhưng chưa chính xác, số test case chính xác 40%-50%. Kết quả test đúng 40%-50%
+	+Developing - Marginally adequate (từ 60%-70%):	Viết được test case, test script nhưng chưa chính xác, số test case chính xác 60%-70%. Kết quả test đúng 60%-70%
+	+Sufficient - Meet expectation (từ 80%-90%):	Viết được test case, test script nhưng chưa chính xác, số test case chính xác 80%-90%. Kết quả test đúng 80%-90%
+	+Exemplary - Exceeds expectations (từ 90%-100%): Viết được test case, test script nhưng chưa chính xác, số test case chính xác >90%. Kết quả test đúng > 90%
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ CLO2: Thực hiện được các phần việc của mình trong dự án của nhóm (kỹ năng làm dự án)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*** Tiêu chí 3: Viết được báo cáo cho phần việc của mình trong kết quả dự án của nhóm
+	+Fail - Below Expectation (từ 0 - 40%): Không viết được báo cáo kết quả các nội dung đã được phân công trong nhóm
+	+Beginning - Needs Improvement(từ 40%-54%): Viết được báo cáo kết quả dự án với dưới 30% các đề mục chính đã được phân công trong nhóm.	Nội dung các mục còn sơ sài.
+	+Developing - Marginally adequate (từ 55%-69%): Viết được báo cáo kết quả dự án với khoảng 30-50% các đề mục chính đã được phân công trong nhóm. Nội dung các mục đã có các ý chính.
+	+Sufficient - Meet expectation (từ 70%-84%): Viết được báo cáo kết quả dự án khoảng 50-70% các đề mục chính đã được phân công trong nhóm. Nội dung các mục đã có các ý chính, nhất quán với các nội dung của thành viên khác.
+	+Exemplary - Exceeds expectations (từ 85%-100%): Viết được báo cáo kết quả dự án với trên 70% các đề mục chính đã được phân công trong nhóm. Nội dung các mục đầy đủ, nhất quán với các nội dung của thành viên
+
+*** Tiêu chí 4: Trình bày diễn thuyết được nội dung phần việc của mình và sự liên kết nội dung của mình với các nội dung khác trong kết quả dự án.
+	+Fail - Below Expectation (từ 0 - 40%): Không trình bày được kết quả nội dung phần việc của mình.
+	+Beginning - Needs Improvement(từ 40%-54%): Trình bày được dưới 30% số nội dung phần việc của mình, trình bày dưới 30% liên kết nội dung phần việc của mình với các nội dung khác. Trình bày chưa lưu loát, chưa có trọng tâm
+	+Developing - Marginally adequate (từ 55%-69%): Trình bày được khoảng 30 -50% số nội dung phần việc của mình, trình bày 30-50% liên kết nội dung phần việc của mình với các nội dung khác. Trình bày chưa mạch lạc, nhưng chưa có trọng tâm.
+	+Sufficient - Meet expectation (từ 70%-84%): Trình bày được 50 - 70% số nội dung phần việc của mình, trình bày 50-70% liên kết nội dung phần việc của mình với các nội dung khác. Trình bày mạch lạc, có trọng tâm.
+	+Exemplary - Exceeds expectations (từ 85%-100%): Trình bày được ít nhất 70% số nội dung phần việc của mình, trình bày 50-70% liên kết nội dung phần việc của mình với các nội dung khác. Trình bày mạch lạc, có trọng tâm, bảo vệ được ý kiến củamình và thuyết phục được người nghe.
+-----------------------------------------------------------------------------------------
+Nội dung yêu cầu cho project cuối kỳ môn ĐBCLPM:
+1) Phát triển từ project đã đăng ký trước đây nếu nó là webapp, thay đổi cho phù hợp với nội dung đánh giá theo yêu cầu của CLO (CLO1 và CLO2, chủ yếu là testing - không cần PenPot)
+2) Nhóm Project có từ 2-4 sinh viên. Mỗi em trong nhóm chịu trách nhiệm hoàn toàn cho 1 (MỘT) usecase của phần mềm: phân tích thiết kế phần mềm cho usecase (nêu rõ yêu cầu chức năng của form để test), và cùng nhau cài đặt (build) phần mềm của project. 
+	-Chú ý là usecase là một tình huống nghiệp vụ của công ty/tổ chức mà một người không thể làm bằng tay (sổ sách) được, phải dùng đến máy tính, như tìm hàng, đặt hàng, giao hàng,.., còn like/unlike, login đều không phải là usecase của cty. 
+	-Các usecase của phần mềm phải có liên kết với nhau (include/extend/generalisation).
+3) Theo như yêu cầu của CLO, các em sẽ phải thể hiện được:
+- Thể hiện được khả năng rà soát tài liệu phân tích thiết kế của cả nhóm (tiêu chí 1): verification, validation, dò vết (các tính chất impact, derived, coverage).., ie: xem xét các loại tài liệu (không chạy được) để đảm bảo tính đầy đủ và chính xác của bộ testcase.
+- Thể hiện được tính chuyên nghiệp trong việc tạo ra các testcase, và cài đặt (chạy) testcase cho usecase do mình phụ trách (tiêu chí 2), từ các phương pháp kỹ thuật đã học như phân hoạch miền giá trị tương đương, bảng quyết định, Cause Effect Graph (có điểm cao nhất), nguyên lý Pareto, statement/branch/condition/control-flow(path) coverage...
+** Chú ý là các yêu cầu của usecase phải đủ để đưa ra từ 10 đến 20 testcases.
+** Đặc tả cho testcase: dẫn xuất từ đâu, function hay non-function, nội dung test, kỹ thuật tiến hành. Test cho bảo mật (non-function): nên test quyền truy xuất vào csdl của các api. Form login không cần test.
+- Thể hiện được phần nội dung mình làm trong báo cáo (tiêu chí 3), và thuyết trình (tiêu chí 4). Buổi sáng sẽ có khoảng 8 project báo cáo, buổi chiều 6 project, mỗi thành viên có từ 5p-10p trình bày (có demo). Báo cáo (dạng pdf) được trình bày như hướng dẫn xây dựng ứng dụng + phương pháp kiểm thử và các testcases (cho từng usecase). 
+** Chú ý: Mỗi thành viên của nhóm phải xác định rõ trách nhiệm của mình (usecase) trong file đăng ký project để đánh giá theo yêu cầu của CLO.
+** File báo cáo đặt tên là: MÃ SINH VIÊN CỦA TRƯỞNG NHÓM (nhóm).pdf
+
